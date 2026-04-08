@@ -1,0 +1,7 @@
+{
+  "name": "Copenhagen Bowl 2026",
+  "description": "Official website for Europe's largest flag football tournament held in Valby Idrætspark, Copenhagen.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
