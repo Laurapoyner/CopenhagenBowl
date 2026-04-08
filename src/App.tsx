@@ -562,7 +562,7 @@ export default function App() {
           </div>
         </div>
       </section>
-
+          
       {/* Sponsors Section */}
       <section id="sponsors" className="py-32 px-6">
         <div className="max-w-7xl mx-auto text-center">
