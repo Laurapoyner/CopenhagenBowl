@@ -52,11 +52,11 @@ export default function App() {
       )}>
         <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => scrollTo('home')}>
-                      <img
-                          src="/logo.png"
-                          alt="Copenhagen Bowl logo"
-                          className="w-10 h-10 object-contain"
-                      />
+                       <img 
+  src="/logo.png" 
+  alt="Copenhagen Bowl logo"
+  className="w-10 h-10 object-contain"
+/>
             <span className="font-bold text-xl tracking-tighter hidden sm:block">COPENHAGEN BOWL</span>
           </div>
 
@@ -467,7 +467,7 @@ export default function App() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <img 
-            src="/Front.jpg" 
+            src="https://images.unsplash.com/photo-1504450758481-7338eba7524a?q=80&w=1920&auto=format&fit=crop" 
             alt="History" 
             className="w-full h-full object-cover opacity-10"
             referrerPolicy="no-referrer"
@@ -562,7 +562,7 @@ export default function App() {
           </div>
         </div>
       </section>
-          
+
       {/* Sponsors Section */}
       <section id="sponsors" className="py-32 px-6">
         <div className="max-w-7xl mx-auto text-center">
@@ -581,7 +581,7 @@ export default function App() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <img 
-                      src="/Front.jpg" 
+            src="/Front.jpg" 
             alt="Contact" 
             className="w-full h-full object-cover opacity-20"
             referrerPolicy="no-referrer"
