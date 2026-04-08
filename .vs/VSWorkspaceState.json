@@ -1,7 +1,9 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\public",
+    "\\src",
+    "\\src\\lib"
   ],
-  "SelectedNode": "\\C:\\Users\\laura\\Source\\Repos\\CopenhagenBowl",
   "PreviewInSolutionExplorer": false
 }
