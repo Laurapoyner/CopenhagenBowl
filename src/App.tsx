@@ -234,7 +234,7 @@ export default function App() {
               className="bg-slate-900 rounded-3xl overflow-hidden border border-slate-800 group"
             >
               <div className="h-64 relative">
-                <img src="/men.png" referrerPolicy="no-referrer" />
+                              <img src="/men.png" referrerPolicy="no-referrer" />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent" />
                 <div className="absolute bottom-6 left-6">
                   <h3 className="text-3xl font-black uppercase tracking-tighter">{t.divisions.mens}</h3>
@@ -262,7 +262,7 @@ export default function App() {
               className="bg-slate-900 rounded-3xl overflow-hidden border border-slate-800 group"
             >
               <div className="h-64 relative">
-                <img src="/women.png" className="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-500" referrerPolicy="no-referrer" />
+                              <img src="/women.png" className="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-500" referrerPolicy="no-referrer" />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent" />
                 <div className="absolute bottom-6 left-6">
                   <h3 className="text-3xl font-black uppercase tracking-tighter">{t.divisions.womens}</h3>
@@ -282,7 +282,7 @@ export default function App() {
               className="bg-slate-900 rounded-3xl overflow-hidden border border-slate-800 group"
             >
               <div className="h-64 relative">
-                <img src="/mix.png" referrerPolicy="no-referrer" />
+                              <img src="/mix.png" referrerPolicy="no-referrer" />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent" />
                 <div className="absolute bottom-6 left-6">
                   <h3 className="text-3xl font-black uppercase tracking-tighter">{t.divisions.coed}</h3>
