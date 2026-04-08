@@ -52,9 +52,11 @@ export default function App() {
       )}>
         <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => scrollTo('home')}>
-            <div className="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center shadow-lg shadow-red-600/20">
-              <span className="font-bold text-white italic">CB</span>
-            </div>
+                      <img
+                          src="/logo.png"
+                          alt="Copenhagen Bowl logo"
+                          className="w-10 h-10 object-contain"
+                      />
             <span className="font-bold text-xl tracking-tighter hidden sm:block">COPENHAGEN BOWL</span>
           </div>
 
@@ -116,7 +118,7 @@ export default function App() {
         {/* Background Image Placeholder */}
         <div className="absolute inset-0 z-0">
           <img 
-            src="https://images.unsplash.com/photo-1566577739112-5180d4bf9390?q=80&w=1920&auto=format&fit=crop" 
+                      src="\Front.jpg" 
             alt="Flag Football Action" 
             className="w-full h-full object-cover opacity-40 scale-105"
             referrerPolicy="no-referrer"
@@ -203,16 +205,16 @@ export default function App() {
       <section className="py-20 px-6 overflow-hidden">
         <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4">
           <motion.div whileHover={{ scale: 1.02 }} className="h-48 md:h-64 rounded-2xl overflow-hidden">
-            <img src="https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=800&auto=format&fit=crop" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                      <img src="\1CopenhagenBowl.jpg"  className="w-full h-full object-cover" referrerPolicy="no-referrer" />
           </motion.div>
           <motion.div whileHover={{ scale: 1.02 }} className="h-48 md:h-64 rounded-2xl overflow-hidden mt-8 md:mt-12">
-            <img src="https://images.unsplash.com/photo-1517649763962-0c623066013b?q=80&w=800&auto=format&fit=crop" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                      <img src="\2CopenhagenBowl.jpg"  className="w-full h-full object-cover" referrerPolicy="no-referrer" />
           </motion.div>
           <motion.div whileHover={{ scale: 1.02 }} className="h-48 md:h-64 rounded-2xl overflow-hidden">
-            <img src="https://images.unsplash.com/photo-1551958219-acbc608c6377?q=80&w=800&auto=format&fit=crop" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                      <img src="\3CopenhagenBowl.jpg" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
           </motion.div>
           <motion.div whileHover={{ scale: 1.02 }} className="h-48 md:h-64 rounded-2xl overflow-hidden mt-8 md:mt-12">
-            <img src="https://images.unsplash.com/photo-1529900748604-07564a03e7a6?q=80&w=800&auto=format&fit=crop" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                      <img src="\4CopenhagenBowl.jpg" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
           </motion.div>
         </div>
       </section>
@@ -232,7 +234,7 @@ export default function App() {
               className="bg-slate-900 rounded-3xl overflow-hidden border border-slate-800 group"
             >
               <div className="h-64 relative">
-                <img src="https://images.unsplash.com/photo-1519861531473-920036234714?q=80&w=800&auto=format&fit=crop" className="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-500" referrerPolicy="no-referrer" />
+                <img src="/men.png" referrerPolicy="no-referrer" />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent" />
                 <div className="absolute bottom-6 left-6">
                   <h3 className="text-3xl font-black uppercase tracking-tighter">{t.divisions.mens}</h3>
@@ -260,7 +262,7 @@ export default function App() {
               className="bg-slate-900 rounded-3xl overflow-hidden border border-slate-800 group"
             >
               <div className="h-64 relative">
-                <img src="https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?q=80&w=800&auto=format&fit=crop" className="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-500" referrerPolicy="no-referrer" />
+                <img src="/women.png" className="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-500" referrerPolicy="no-referrer" />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent" />
                 <div className="absolute bottom-6 left-6">
                   <h3 className="text-3xl font-black uppercase tracking-tighter">{t.divisions.womens}</h3>
@@ -280,7 +282,7 @@ export default function App() {
               className="bg-slate-900 rounded-3xl overflow-hidden border border-slate-800 group"
             >
               <div className="h-64 relative">
-                <img src="https://images.unsplash.com/photo-1526232761682-d26e03ac148e?q=80&w=800&auto=format&fit=crop" className="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-500" referrerPolicy="no-referrer" />
+                <img src="/mix.png" referrerPolicy="no-referrer" />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent" />
                 <div className="absolute bottom-6 left-6">
                   <h3 className="text-3xl font-black uppercase tracking-tighter">{t.divisions.coed}</h3>
@@ -303,7 +305,7 @@ export default function App() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <img 
-            src="https://images.unsplash.com/photo-1551958219-acbc608c6377?q=80&w=1920&auto=format&fit=crop" 
+            src="/Dommer.jpg" 
             alt="Officiating" 
             className="w-full h-full object-cover opacity-20"
             referrerPolicy="no-referrer"
@@ -465,7 +467,7 @@ export default function App() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <img 
-            src="https://images.unsplash.com/photo-1504450758481-7338eba7524a?q=80&w=1920&auto=format&fit=crop" 
+            src="/Front.jpg" 
             alt="History" 
             className="w-full h-full object-cover opacity-10"
             referrerPolicy="no-referrer"
@@ -579,7 +581,7 @@ export default function App() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <img 
-            src="https://images.unsplash.com/photo-1517649763962-0c623066013b?q=80&w=1920&auto=format&fit=crop" 
+                      src="/Front.jpg" 
             alt="Contact" 
             className="w-full h-full object-cover opacity-20"
             referrerPolicy="no-referrer"
