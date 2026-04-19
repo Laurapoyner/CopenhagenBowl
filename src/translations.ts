@@ -142,7 +142,7 @@ export const t: Translation = {
         laura: {
             role: 'Web & Graphics',
             name: 'Laura Poyner',
-            note: 'Please contact Martin or Claes.',
+            note: 'I think you should ask Martin or Claes first.',
         },
     },
     qa: {

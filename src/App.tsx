@@ -553,7 +553,7 @@ export default function App() {
             <section id="history" className="py-32 px-6 bg-slate-900 relative overflow-hidden">
                 <div className="absolute inset-0 z-0">
                     <img
-                        src="https://images.unsplash.com/photo-1504450758481-7338eba7524a?q=80&w=1920&auto=format&fit=crop"
+                        src="/1CopenhagenBowl.jpg"
                         alt="History"
                         className="w-full h-full object-cover opacity-10"
                         referrerPolicy="no-referrer"
@@ -723,7 +723,7 @@ export default function App() {
             <section className="py-32 px-6 bg-blue-600 relative overflow-hidden">
                 <div className="absolute inset-0 z-0">
                     <img
-                        src="/Front.jpg"
+                        src="/2CopenhagenBowl.jpg"
                         alt="Contact"
                         className="w-full h-full object-cover opacity-20"
                         referrerPolicy="no-referrer"
