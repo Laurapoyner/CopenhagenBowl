@@ -821,7 +821,7 @@ export default function App() {
                         >
                             <div className="w-32 h-32 bg-slate-800 rounded-full mx-auto mb-6 overflow-hidden border-2 border-blue-600/30 flex items-center justify-center">
                                 <img
-                                    src="/claes.png"
+                                    src="/claes.jpg"
                                     alt={t.personnel.claes.name}
                                     className="w-full h-full object-cover"
                                     referrerPolicy="no-referrer"
