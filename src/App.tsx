@@ -54,7 +54,7 @@ export default function App() {
     ];
 
     return (
-        <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-blue-500/30">
+        <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-blue-500/30 overflow-x-hidden">
             {/* Navigation */}
             <nav
                 className={cn(
@@ -606,7 +606,7 @@ export default function App() {
                             <div className="bg-slate-950 rounded-3xl border border-slate-800 overflow-hidden">
                                 <div className="p-6 bg-slate-800/50 border-b border-slate-800 flex justify-between items-center">
                                     <h4 className="font-bold uppercase tracking-widest text-sm text-slate-400">
-                                        {t.history.results} - 2024 Winners
+                                        {t.history.results} - 2025 Winners
                                     </h4>
                                     <Trophy size={18} className="text-yellow-500" />
                                 </div>
@@ -945,12 +945,16 @@ export default function App() {
 
             {/* Footer */}
             <footer className="bg-slate-950 border-t border-slate-800 py-20 px-6">
-                <div className="max-w-7xl mx-auto grid md:grid-cols-4 gap-12">
+                <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
                     <div className="col-span-2">
                         <div className="flex items-center gap-3 mb-6">
-                            <div className="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center">
-                                <span className="font-bold text-white italic">CB</span>
-                            </div>
+                            {/*  <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center"> */}
+                                <img
+                                    src="/logo.png"
+                                    alt="Copenhagen Bowl logo"
+                                    className="w-8 h-8 object-contain"
+                                />
+                            {/*  </div> */}
                             <span className="font-bold text-xl tracking-tighter">COPENHAGEN BOWL</span>
                         </div>
 
@@ -989,7 +993,7 @@ export default function App() {
 
                     <div>
                         <h5 className="font-bold uppercase tracking-widest text-sm mb-6">Location</h5>
-                        <div className="space-y-4 text-slate-500">
+                        <div className="space-y-4 text-slate-400 text-sm leading-relaxed break-words">
                             <p className="flex gap-3">
                                 <MapPin size={18} className="text-red-500 shrink-0" />
                                 Valby Idrætspark
@@ -1009,8 +1013,8 @@ export default function App() {
 
                     <div>
                         <h5 className="font-bold uppercase tracking-widest text-sm mb-6">Contact</h5>
-                        <div className="space-y-4 text-slate-500">
-                            <p>martin_200186@hotmail.com</p>
+                        <div className="space-y-4 text-slate-400 text-sm leading-relaxed break-words">
+                            <p className="break-all">martin_200186@hotmail.com</p>
                             <p>+45 51 54 99 52 (No WhatsApp)</p>
                         </div>
                     </div>
