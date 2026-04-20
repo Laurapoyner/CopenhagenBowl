@@ -183,7 +183,7 @@ export default function App() {
                         </div>
 
                         <div className="flex flex-wrap justify-center gap-4">
-                            <a href="https://www.facebook.com/groups/1529865777274897/" target="_blank">
+                            <a href="https://cphbowl.nemtilmeld.dk/8" target="_blank">
                             <button className="px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl transition-all transform hover:scale-105 shadow-xl shadow-blue-600/20">
                                 {t.hero.cta}
                                 </button>
@@ -628,7 +628,7 @@ export default function App() {
                                                     division: 'Elite',
                                                     winner: 'Blue Berets (FR)',
                                                     runner: 'Red Roosters(FR)',
-                                                    mvp: 'x',
+                                                    mvp: 'Tanguy Lominet',
                                                 },
                                                 {
                                                     division: 'Leisure',
