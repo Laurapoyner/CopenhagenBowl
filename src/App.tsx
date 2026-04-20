@@ -946,7 +946,7 @@ export default function App() {
             {/* Footer */}
             <footer className="bg-slate-950 border-t border-slate-800 py-20 px-6">
                 <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
-                    <div className="col-span-2">
+                    <div className="md:col-span-2">
                         <div className="flex items-center gap-3 mb-6">
                             {/*  <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center"> */}
                                 <img
