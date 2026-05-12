@@ -83,10 +83,6 @@ export const t: Translation = {
     schedule: 'Schedule',
     livestream: 'Livestream',
     partners: 'Partners',
-    divisions: 'Divisions',
-    rules: 'Rules',
-    officiating: 'Officiating',
-    history: 'History',
   },
   hero: {
     title: 'Copenhagen Bowl 2026',

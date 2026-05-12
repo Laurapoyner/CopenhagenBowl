@@ -10,12 +10,29 @@ export async function onRequest(context) {
   }
 
   try {
-    const response = await fetch(`${BASE_URL}/matches?tournament=${tournament}&apikey=${API_KEY}`);
+    const url = `${BASE_URL}/matches?tournament=${tournament}&apikey=${API_KEY}`;
+    const response = await fetch(url);
+    
+    if (!response.ok) {
+      const text = await response.text();
+      return new Response(JSON.stringify({ error: `API error: ${response.status}`, details: text }), {
+        status: response.status,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
     const data = await response.json();
     return new Response(JSON.stringify(data), {
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Cache-Control': 'no-cache'
+      }
     });
   } catch (error) {
-    return new Response(JSON.stringify({ error: 'Failed to fetch matches' }), { status: 500 });
+    return new Response(JSON.stringify({ error: 'Internal fetch failed', details: error.message }), { 
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 }

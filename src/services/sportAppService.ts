@@ -55,7 +55,11 @@ export const sportAppService = {
   async getMatches(tournamentId: number): Promise<SportAppMatch[]> {
     try {
       const response = await fetch(`${BASE_URL}/matches?tournament=${tournamentId}`);
-      if (!response.ok) throw new Error('Failed to fetch matches');
+      if (!response.ok) {
+        const errorMsg = `Server error: ${response.status} ${response.statusText}`;
+        console.error(errorMsg);
+        throw new Error(errorMsg);
+      }
       
       const json = await response.json();
       const data = json.data || [];

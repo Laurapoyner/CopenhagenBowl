@@ -13,9 +13,16 @@ export async function onRequest(context) {
     const response = await fetch(`${BASE_URL}/standings?tournament=${tournament}&apikey=${API_KEY}`);
     const data = await response.json();
     return new Response(JSON.stringify(data), {
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Cache-Control': 'no-cache'
+      }
     });
   } catch (error) {
-    return new Response(JSON.stringify({ error: 'Failed to fetch standings' }), { status: 500 });
+    return new Response(JSON.stringify({ error: 'Failed to fetch standings', details: error.message }), { 
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 }

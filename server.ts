@@ -28,12 +28,21 @@ async function startServer() {
   app.get('/api/sportapp/matches', async (req, res) => {
     const { tournament } = req.query;
     try {
-      const response = await fetch(`${BASE_URL}/matches?tournament=${tournament}&apikey=${API_KEY}`);
+      const url = `${BASE_URL}/matches?tournament=${tournament}&apikey=${API_KEY}`;
+      console.log(`Proxying request to SportApp: ${url}`);
+      const response = await fetch(url);
+      
+      if (!response.ok) {
+        const text = await response.text();
+        console.error(`SportApp API error: ${response.status} - ${text}`);
+        return res.status(response.status).send(text);
+      }
+
       const data = await response.json();
       res.json(data);
     } catch (error) {
       console.error('Proxy error fetching matches:', error);
-      res.status(500).json({ error: 'Failed to fetch matches' });
+      res.status(500).json({ error: 'Failed to fetch matches', message: error.message });
     }
   });
 
