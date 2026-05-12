@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import {
     Trophy,
     Users,
@@ -26,6 +26,8 @@ import {
 } from 'lucide-react';
 import { t } from './translations';
 import { cn } from './lib/utils';
+import { TournamentLive } from './components/TournamentLive';
+import { LivestreamSchedule } from './components/LivestreamSchedule';
 
 export default function App() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -46,11 +48,12 @@ export default function App() {
     };
 
     const partners = [
-        { name: 'MVP Sports Gear', logo: '/mvp.png', href: 'https://mvpsportsgear.dk/' },
-        { name: 'meddethele', logo: '/meddethele.jpg', href: 'https://www.meddethele.dk/' },
-        { name: 'NuOla', logo: '/nuola.png', href: 'https://www.nuola.co.uk/' },
-        { name: 'Big Popas', logo: 'big-popas-black-com.png', href: 'https://bigpopas.com/' },
-        { name: 'UPGear', logo: '/UPGEAR_Logo.png', href: 'https://upgear.ch/' },
+        { name: 'MVP Sports Gear', logo: '/mvp.png', href: 'https://mvpsportsgear.dk/', hours: "Sat: 09:00-18:00 / Sun: 09:00-17:00" },
+        { name: 'meddethele', logo: '/meddethele.jpg', href: 'https://www.meddethele.dk/', hours: "All Weekend" },
+        { name: 'NuOla', logo: '/nuola.png', href: 'https://www.nuola.co.uk/', hours: "09:00 - End of play" },
+        { name: 'Big Popas', logo: 'big-popas-black-com.png', href: 'https://bigpopas.com/', hours: "Visit booth for times" },
+        { name: 'UPGear', logo: '/UPGEAR_Logo.png', href: 'https://upgear.ch/', hours: "All Weekend" },
+        { name: 'BreakAway Data', logo: '/breakaway.png', href: 'https://www.breakawaydata.com/', hours: "Visit booth for info" },
     ];
 
     return (
@@ -64,14 +67,14 @@ export default function App() {
                         : 'bg-transparent border-transparent py-6'
                 )}
             >
-                <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
+                <div className="max-w-7xl mx-auto px-4 md:px-6 flex justify-between items-center">
                     <div className="flex items-center gap-3 cursor-pointer" onClick={() => scrollTo('home')}>
                         <img
                             src="/logo.png"
                             alt="Copenhagen Bowl logo"
-                            className="w-10 h-10 object-contain"
+                            className="w-10 h-10 object-contain shadow-lg shadow-black/20"
                         />
-                        <span className="font-bold text-xl tracking-tighter hidden sm:block">
+                        <span className="font-bold text-xl tracking-tighter hidden sm:block uppercase">
                             COPENHAGEN BOWL
                         </span>
                     </div>
@@ -81,20 +84,14 @@ export default function App() {
                             <button
                                 key={key}
                                 onClick={() => scrollTo(key)}
-                                className="text-sm font-medium text-slate-400 hover:text-white transition-colors uppercase tracking-widest"
+                                className={cn(
+                                    "text-sm font-medium transition-colors uppercase tracking-widest",
+                                    key === 'livestream' ? "text-red-500 hover:text-red-400" : "text-slate-400 hover:text-white"
+                                )}
                             >
                                 {label}
                             </button>
                         ))}
-                        <a
-                            href="https://www.youtube.com/channel/UCjFf93sjWu1zh_zGgBCVppw/featured"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center gap-2 text-red-500 hover:text-red-400 transition-colors text-sm font-bold uppercase tracking-widest"
-                        >
-                            <Youtube size={16} />
-                            Live
-                        </a>
                     </div>
 
                     <div className="md:hidden flex items-center gap-4">
@@ -119,19 +116,14 @@ export default function App() {
                                 <button
                                     key={key}
                                     onClick={() => scrollTo(key)}
-                                    className="text-2xl font-bold text-left border-b border-slate-800 pb-4"
+                                    className={cn(
+                                        "text-2xl font-bold text-left border-b border-slate-800 pb-4",
+                                        key === 'livestream' && "text-red-500"
+                                    )}
                                 >
                                     {label}
                                 </button>
                             ))}
-                            <a
-                                href="https://www.youtube.com/channel/UCjFf93sjWu1zh_zGgBCVppw/featured"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-2xl font-bold text-left border-b border-slate-800 pb-4 text-red-500"
-                            >
-                                Live
-                            </a>
                         </div>
                     </motion.div>
                 )}
@@ -149,7 +141,7 @@ export default function App() {
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent" />
                 </div>
 
-                <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
+                <div className="relative z-10 max-w-5xl mx-auto px-4 md:px-6 text-center">
                     <motion.div
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -160,7 +152,7 @@ export default function App() {
                             <span className="truncate">{t.hero.subtitle}</span>
                         </div>
 
-                        <h1 className="text-4xl sm:text-6xl md:text-8xl font-black mb-6 tracking-tighter leading-none">
+                        <h1 className="text-4xl sm:text-6xl md:text-8xl font-black mb-6 tracking-tighter leading-none uppercase">
                             COPENHAGEN <span className="text-blue-500">BOWL</span>
                         </h1>
 
@@ -183,11 +175,11 @@ export default function App() {
                         </div>
 
                         <div className="flex flex-wrap justify-center gap-4">
-                            <a href="https://cphbowl.nemtilmeld.dk/8" target="_blank">
-                            <button className="px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl transition-all transform hover:scale-105 shadow-xl shadow-blue-600/20">
-                                {t.hero.cta}
+                            <a href="https://cphbowl.nemtilmeld.dk/8" target="_blank" rel="noopener noreferrer">
+                                <button className="px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl transition-all transform hover:scale-105 shadow-xl shadow-blue-600/20">
+                                    {t.hero.cta}
                                 </button>
-                                </a>
+                            </a>
 
                             <button
                                 onClick={() => scrollTo('rules')}
@@ -231,22 +223,63 @@ export default function App() {
                 </div>
             </section>
 
+            {/* Live Tournament Data */}
+            <TournamentLive />
+            <LivestreamSchedule />
+
+            {/* Sponsors Section */}
+            <section id="partners" className="py-32 px-6">
+                <div className="max-w-7xl mx-auto text-center">
+                    <h2 className="text-4xl font-black mb-16 uppercase tracking-tighter">Our Partners</h2>
+
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 md:gap-12 items-stretch">
+                        {partners.map((partner) => (
+                            <a
+                                key={partner.name}
+                                href={partner.href}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="group flex flex-col items-center gap-4"
+                            >
+                                <div className="w-full h-24 bg-red-600/5 hover:bg-red-600/10 rounded-2xl border border-slate-800 flex items-center justify-center p-4 transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-xl group-hover:border-red-600/30">
+                                    <img
+                                        src={partner.logo}
+                                        alt={partner.name}
+                                        className="max-h-full max-w-full object-contain filter grayscale group-hover:grayscale-0 transition-all duration-500"
+                                    />
+                                </div>
+                                <div className="flex flex-col items-center gap-1">
+                                    <span className="text-[10px] font-bold uppercase tracking-widest text-slate-200 group-hover:text-white transition-colors">
+                                        {partner.name}
+                                    </span>
+                                    {partner.hours && (
+                                        <span className="text-[8px] font-medium text-slate-500 group-hover:text-slate-400 transition-colors uppercase tracking-tight">
+                                            {partner.hours}
+                                        </span>
+                                    )}
+                                </div>
+                            </a>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
             {/* Image Gallery Section */}
             <section className="py-20 px-6 overflow-hidden">
                 <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <motion.div whileHover={{ scale: 1.02 }} className="h-48 md:h-64 rounded-2xl overflow-hidden">
+                    <motion.div whileHover={{ scale: 1.02 }} className="h-48 md:h-64 rounded-2xl overflow-hidden shadow-2xl">
                         <img src="/1CopenhagenBowl.jpg" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                     </motion.div>
 
-                    <motion.div whileHover={{ scale: 1.02 }} className="h-48 md:h-64 rounded-2xl overflow-hidden mt-8 md:mt-12">
+                    <motion.div whileHover={{ scale: 1.02 }} className="h-48 md:h-64 rounded-2xl overflow-hidden mt-8 md:mt-12 shadow-2xl">
                         <img src="/2CopenhagenBowl.jpg" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                     </motion.div>
 
-                    <motion.div whileHover={{ scale: 1.02 }} className="h-48 md:h-64 rounded-2xl overflow-hidden">
+                    <motion.div whileHover={{ scale: 1.02 }} className="h-48 md:h-64 rounded-2xl overflow-hidden shadow-2xl">
                         <img src="/3CopenhagenBowl.jpg" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                     </motion.div>
 
-                    <motion.div whileHover={{ scale: 1.02 }} className="h-48 md:h-64 rounded-2xl overflow-hidden mt-8 md:mt-12">
+                    <motion.div whileHover={{ scale: 1.02 }} className="h-48 md:h-64 rounded-2xl overflow-hidden mt-8 md:mt-12 shadow-2xl">
                         <img src="/4CopenhagenBowl.jpg" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                     </motion.div>
                 </div>
@@ -266,12 +299,12 @@ export default function App() {
                         {/* Men's Divisions */}
                         <motion.div
                             whileHover={{ y: -10 }}
-                            className="bg-slate-900 rounded-3xl overflow-hidden border border-slate-800 group"
+                            className="bg-slate-900 rounded-3xl overflow-hidden border border-slate-800 group shadow-xl"
                         >
                             <div className="h-64 relative">
                                 <img
                                     src="/men.png"
-                                    className="w-full h-full object-cover"
+                                    className="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-500"
                                     referrerPolicy="no-referrer"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent" />
@@ -283,22 +316,22 @@ export default function App() {
                             <div className="p-8 space-y-4">
                                 <div className="flex items-center justify-between p-4 bg-slate-800/50 rounded-2xl border border-slate-700/50">
                                     <span className="font-bold text-blue-400">ELITE</span>
-                                    <span className="text-xs font-bold bg-blue-500/20 text-blue-300 px-3 py-1 rounded-full">
-                                        PRO
+                                    <span className="text-xs font-bold bg-blue-500/20 text-blue-300 px-3 py-1 rounded-full uppercase tracking-tighter">
+                                        PRO LEVEL
                                     </span>
                                 </div>
 
                                 <div className="flex items-center justify-between p-4 bg-slate-800/50 rounded-2xl border border-slate-700/50">
                                     <span className="font-bold text-slate-300">COMPETITIVE</span>
-                                    <span className="text-xs font-bold bg-slate-700 text-slate-400 px-3 py-1 rounded-full">
-                                        HIGH
+                                    <span className="text-xs font-bold bg-slate-700 text-slate-400 px-3 py-1 rounded-full uppercase tracking-tighter">
+                                        HIGH LEVEL
                                     </span>
                                 </div>
 
                                 <div className="flex items-center justify-between p-4 bg-slate-800/50 rounded-2xl border border-slate-700/50">
                                     <span className="font-bold text-slate-400">LEISURE</span>
-                                    <span className="text-xs font-bold bg-slate-700 text-slate-500 px-3 py-1 rounded-full">
-                                        FUN
+                                    <span className="text-xs font-bold bg-slate-700 text-slate-500 px-3 py-1 rounded-full uppercase tracking-tighter">
+                                        FUN LEVEL
                                     </span>
                                 </div>
                             </div>
@@ -307,12 +340,12 @@ export default function App() {
                         {/* Women's Division */}
                         <motion.div
                             whileHover={{ y: -10 }}
-                            className="bg-slate-900 rounded-3xl overflow-hidden border border-slate-800 group"
+                            className="bg-slate-900 rounded-3xl overflow-hidden border border-slate-800 group shadow-xl"
                         >
                             <div className="h-64 relative">
                                 <img
                                     src="/women.png"
-                                    className="w-full h-full object-cover"
+                                    className="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-500"
                                     referrerPolicy="no-referrer"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent" />
@@ -326,7 +359,7 @@ export default function App() {
                                     One of the fastest growing divisions in Europe, featuring top national and club teams.
                                 </p>
                                 <div className="p-4 bg-blue-600/10 rounded-2xl border border-blue-600/20">
-                                    <span className="font-bold text-blue-400">OPEN DIVISION</span>
+                                    <span className="font-bold text-blue-400 uppercase tracking-tighter">OPEN DIVISION</span>
                                 </div>
                             </div>
                         </motion.div>
@@ -334,12 +367,12 @@ export default function App() {
                         {/* Co-Ed Division */}
                         <motion.div
                             whileHover={{ y: -10 }}
-                            className="bg-slate-900 rounded-3xl overflow-hidden border border-slate-800 group"
+                            className="bg-slate-900 rounded-3xl overflow-hidden border border-slate-800 group shadow-xl"
                         >
                             <div className="h-64 relative">
                                 <img
                                     src="/mix.png"
-                                    className="w-full h-full object-cover"
+                                    className="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-500"
                                     referrerPolicy="no-referrer"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent" />
@@ -354,7 +387,7 @@ export default function App() {
                                 </p>
                                 <div className="p-4 bg-blue-600/10 rounded-2xl border border-blue-600/20 flex items-center gap-3">
                                     <Info className="text-blue-500" size={20} />
-                                    <span className="font-bold text-blue-400">{t.divisions.coed_rule}</span>
+                                    <span className="font-bold text-blue-400 uppercase tracking-tighter">{t.divisions.coed_rule}</span>
                                 </div>
                             </div>
                         </motion.div>
@@ -384,16 +417,17 @@ export default function App() {
                             Most of our instructor Crew is set consisting of some of the best IFAF officials all with
                             experience of supervising at IFAF tournaments! Recognized by IFAF to be delivered by IFAF
                             recognized technical officials.
-                           
                         </p>
-                        <p> Participants can both compete in the tournament and attend the officiating clinic, as the game schedule is designed to make this possible.</p>
+                        <p className="text-blue-100/80 mb-8">
+                            Participants can both compete in the tournament and attend the officiating clinic, as the game schedule is designed to make this possible.
+                        </p>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
-                            <div className="flex items-center gap-3 bg-blue-700/50 p-4 rounded-2xl">
+                            <div className="flex items-center gap-3 bg-blue-700/50 p-4 rounded-2xl border border-white/10">
                                 <Shield className="text-blue-300" />
                                 <span className="font-bold">IFAF Certified</span>
                             </div>
-                            <div className="flex items-center gap-3 bg-blue-700/50 p-4 rounded-2xl">
+                            <div className="flex items-center gap-3 bg-blue-700/50 p-4 rounded-2xl border border-white/10">
                                 <Users className="text-blue-300" />
                                 <span className="font-bold">8 Expert Instructors</span>
                             </div>
@@ -411,7 +445,7 @@ export default function App() {
                     </div>
 
                     <div className="flex-1 relative">
-                        <div className="bg-white/10 backdrop-blur-md p-8 rounded-3xl border border-white/20">
+                        <div className="bg-white/10 backdrop-blur-md p-8 rounded-3xl border border-white/20 shadow-2xl">
                             <h4 className="font-bold text-xl mb-6 border-b border-white/20 pb-4">Instructors include:</h4>
                             <ul className="space-y-4">
                                 <li className="flex justify-between items-center">
@@ -450,7 +484,7 @@ export default function App() {
 
                     <div className="grid md:grid-cols-2 gap-12">
                         <div className="space-y-8">
-                            <div className="bg-slate-900 p-8 rounded-3xl border border-slate-800">
+                            <div className="bg-slate-900 p-8 rounded-3xl border border-slate-800 shadow-lg">
                                 <h3 className="text-2xl font-bold mb-6 flex items-center gap-3 text-blue-500">
                                     <Info /> {t.rules.general}
                                 </h3>
@@ -479,7 +513,7 @@ export default function App() {
                                 </ul>
                             </div>
 
-                            <div className="bg-slate-900 p-8 rounded-3xl border border-slate-800">
+                            <div className="bg-slate-900 p-8 rounded-3xl border border-slate-800 shadow-lg">
                                 <h3 className="text-2xl font-bold mb-6 flex items-center gap-3 text-red-500">
                                     <Users /> {t.rules.coed}
                                 </h3>
@@ -502,7 +536,7 @@ export default function App() {
                         </div>
 
                         <div className="space-y-8">
-                            <div className="bg-slate-900 p-8 rounded-3xl border border-slate-800">
+                            <div className="bg-slate-900 p-8 rounded-3xl border border-slate-800 shadow-lg">
                                 <h3 className="text-2xl font-bold mb-6 flex items-center gap-3 text-yellow-500">
                                     <Trophy /> {t.rules.tiebreaker}
                                 </h3>
@@ -513,7 +547,7 @@ export default function App() {
                                         '2: Largest Point differential',
                                         '3: Head to Head',
                                         '4: Most Points scored',
-                                        '5: Wins',
+                                        '5: Views',
                                         '6: Best Result vs. strongest mutual opponent',
                                         '7: Shoot Out from 10-yard line',
                                     ].map((rule, i) => (
@@ -535,10 +569,10 @@ export default function App() {
                                     Participating teams will officiate accompanied by non-playing officials.
                                 </p>
                                 <a
-                                    href="/cheatsheet.jpg"  // <-- dit billede her
+                                    href="/cheatsheet.jpg"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-2xl transition-all flex items-center justify-center gap-3"
+                                    className="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-2xl transition-all flex items-center justify-center gap-3 shadow-xl shadow-blue-600/20"
                                 >
                                     <Download size={20} />
                                     Download Cheat Sheet
@@ -562,20 +596,13 @@ export default function App() {
                 </div>
 
                 <div className="relative z-10 max-w-7xl mx-auto">
-                    <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+                    <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8 text-center md:text-left">
                         <div>
                             <h2 className="text-4xl md:text-5xl font-black mb-4 uppercase tracking-tighter">
                                 {t.history.title}
                             </h2>
                             <p className="text-slate-400 font-medium max-w-xl">{t.history.subtitle}</p>
                         </div>
-
-                        {/* 
-                            < button className="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl border border-slate-700 flex items-center gap-3">
-                            <Download size={18} />
-                            {t.history.download_pdf}
-                        </button>
-                        */}
                     </div>
 
                     <div className="grid lg:grid-cols-3 gap-12">
@@ -592,7 +619,7 @@ export default function App() {
                                     Scandinavia.
                                 </p>
 
-                                <div className="mt-8 p-6 bg-blue-600/10 rounded-2xl border border-blue-600/20">
+                                <div className="mt-8 p-6 bg-blue-600/10 rounded-2xl border border-blue-600/20 shadow-inner">
                                     <History className="text-blue-500 mb-4" size={32} />
                                     <p className="text-sm font-bold text-blue-300 uppercase tracking-widest">
                                         First Winner (2015)
@@ -603,7 +630,7 @@ export default function App() {
                         </div>
 
                         <div className="lg:col-span-2 space-y-12 overflow-hidden">
-                            <div className="bg-slate-950 rounded-3xl border border-slate-800 overflow-hidden">
+                            <div className="bg-slate-950 rounded-3xl border border-slate-800 overflow-hidden shadow-2xl">
                                 <div className="p-6 bg-slate-800/50 border-b border-slate-800 flex justify-between items-center">
                                     <h4 className="font-bold uppercase tracking-widest text-sm text-slate-400">
                                         {t.history.results} - 2025 Winners
@@ -611,8 +638,7 @@ export default function App() {
                                     <Trophy size={18} className="text-yellow-500" />
                                 </div>
 
-                                <div className="overflow-x-auto scrollbar-hide relative">
-                                    <div className="md:hidden absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-slate-950 to-transparent pointer-events-none z-10" />
+                                <div className="overflow-x-auto scrollbar-hide relative max-w-full">
                                     <table className="w-full text-left min-w-[500px]">
                                         <thead>
                                             <tr className="text-xs uppercase tracking-widest text-slate-500 border-b border-slate-800">
@@ -663,58 +689,7 @@ export default function App() {
                                     </table>
                                 </div>
                             </div>
-
-                            {/*
-                            <div className="bg-slate-950 rounded-3xl border border-slate-800 p-8">
-                                <h4 className="font-bold uppercase tracking-widest text-sm text-slate-400 mb-6 flex items-center gap-2">
-                                    <Download size={16} />
-                                    Archive: Results PDF (2016 - 2024)
-                                </h4>
-
-                                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                                    {[2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016].map((year) => (
-                                        <button
-                                            key={year}
-                                            className="flex items-center justify-between p-3 bg-slate-900 hover:bg-slate-800 rounded-xl border border-slate-800 transition-colors group"
-                                        >
-                                            <span className="font-bold text-slate-300">{year}</span>
-                                            <Download size={14} className="text-slate-600 group-hover:text-blue-500 transition-colors" />
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-                            */}
                         </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* Sponsors Section */}
-            <section id="partners" className="py-32 px-6">
-                <div className="max-w-7xl mx-auto text-center">
-                    <h2 className="text-4xl font-black mb-16 uppercase tracking-tighter">Our Partners</h2>
-
-                    <div className="grid grid-cols-2 md:grid-cols-5 gap-8 md:gap-12 items-stretch">
-                        {partners.map((partner) => (
-                            <a
-                                key={partner.name}
-                                href={partner.href}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="group flex flex-col items-center gap-4"
-                            >
-                                <div className="w-full h-24  bg-blue-600 rounded-2xl border border-slate-200 flex items-center justify-center p-4 transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-xl">
-                                    <img
-                                        src={partner.logo}
-                                        alt={partner.name}
-                                        className="max-h-full max-w-full object-contain opacity-100 group-hover:opacity-40 transition-all duration-300"
-                                    />
-                                </div>
-                                <span className="text-sm font-bold uppercase tracking-widest text-slate-500 group-hover:text-white transition-colors">
-                                    {partner.name}
-                                </span>
-                            </a>
-                        ))}
                     </div>
                 </div>
             </section>
@@ -775,13 +750,13 @@ export default function App() {
                         {/* Martin */}
                         <motion.div
                             whileHover={{ y: -10 }}
-                            className="bg-slate-900 rounded-3xl overflow-hidden border border-slate-800 p-8 text-center"
+                            className="bg-slate-900 rounded-3xl overflow-hidden border border-slate-800 p-8 text-center shadow-xl"
                         >
                             <div className="w-32 h-32 bg-slate-800 rounded-full mx-auto mb-6 overflow-hidden border-2 border-red-600/30 flex items-center justify-center">
                                 <img
                                     src="/martin.png"
                                     alt={t.personnel.martin.name}
-                                    className="w-full h-full object-cover"
+                                    className="w-full h-full object-cover filter grayscale hover:grayscale-0 transition-all"
                                     referrerPolicy="no-referrer"
                                     onError={(e) => {
                                         e.currentTarget.style.display = 'none';
@@ -802,14 +777,14 @@ export default function App() {
                                     className="flex items-center justify-center gap-2 hover:text-white transition-colors"
                                 >
                                     <Mail size={16} />
-                                    <span>{t.personnel.martin.email}</span>
+                                    <span className="text-xs">{t.personnel.martin.email}</span>
                                 </a>
                                 <a
                                     href={`tel:${t.personnel.martin.phone.replace(/\s+/g, '')}`}
                                     className="flex items-center justify-center gap-2 hover:text-white transition-colors"
                                 >
                                     <Phone size={16} />
-                                    <span>{t.personnel.martin.phone}</span>
+                                    <span className="text-xs">{t.personnel.martin.phone}</span>
                                 </a>
                             </div>
                         </motion.div>
@@ -817,13 +792,13 @@ export default function App() {
                         {/* Claes */}
                         <motion.div
                             whileHover={{ y: -10 }}
-                            className="bg-slate-900 rounded-3xl overflow-hidden border border-slate-800 p-8 text-center"
+                            className="bg-slate-900 rounded-3xl overflow-hidden border border-slate-800 p-8 text-center shadow-xl"
                         >
                             <div className="w-32 h-32 bg-slate-800 rounded-full mx-auto mb-6 overflow-hidden border-2 border-blue-600/30 flex items-center justify-center">
                                 <img
                                     src="/claes.jpg"
                                     alt={t.personnel.claes.name}
-                                    className="w-full h-full object-cover"
+                                    className="w-full h-full object-cover filter grayscale hover:grayscale-0 transition-all"
                                     referrerPolicy="no-referrer"
                                     onError={(e) => {
                                         e.currentTarget.style.display = 'none';
@@ -844,14 +819,14 @@ export default function App() {
                                     className="flex items-center justify-center gap-2 hover:text-white transition-colors"
                                 >
                                     <Mail size={16} />
-                                    <span>{t.personnel.claes.email}</span>
+                                    <span className="text-xs">{t.personnel.claes.email}</span>
                                 </a>
                                 <a
                                     href={`tel:${t.personnel.claes.phone.replace(/\s+/g, '')}`}
                                     className="flex items-center justify-center gap-2 hover:text-white transition-colors"
                                 >
                                     <Phone size={16} />
-                                    <span>{t.personnel.claes.phone}</span>
+                                    <span className="text-xs">{t.personnel.claes.phone}</span>
                                 </a>
                             </div>
                         </motion.div>
@@ -859,13 +834,13 @@ export default function App() {
                         {/* Laura */}
                         <motion.div
                             whileHover={{ y: -10 }}
-                            className="bg-slate-900 rounded-3xl overflow-hidden border border-slate-800 p-8 text-center"
+                            className="bg-slate-900 rounded-3xl overflow-hidden border border-slate-800 p-8 text-center shadow-xl"
                         >
                             <div className="w-32 h-32 bg-slate-800 rounded-full mx-auto mb-6 overflow-hidden border-2 border-slate-700/30 flex items-center justify-center">
                                 <img
                                     src="/laura.png"
                                     alt={t.personnel.laura.name}
-                                    className="w-full h-full object-cover"
+                                    className="w-full h-full object-cover filter grayscale hover:grayscale-0 transition-all"
                                     referrerPolicy="no-referrer"
                                     onError={(e) => {
                                         e.currentTarget.style.display = 'none';
@@ -879,14 +854,14 @@ export default function App() {
                             <p className="text-slate-500 font-bold text-sm uppercase tracking-widest mb-6">
                                 {t.personnel.laura.role}
                             </p>
-                            <p className="text-slate-400 text-sm italic">{t.personnel.laura.note}</p>
+                            <p className="text-slate-400 text-xs italic">{t.personnel.laura.note}</p>
                         </motion.div>
                     </div>
                 </div>
             </section>
 
             {/* Q&A Section */}
-            <section className="py-32 px-6 bg-slate-900 border-t border-slate-800">
+            <section id="qa" className="py-32 px-6 bg-slate-900 border-t border-slate-800">
                 <div className="max-w-4xl mx-auto">
                     <div className="text-center mb-20">
                         <h2 className="text-4xl md:text-5xl font-black mb-4 uppercase tracking-tighter">
@@ -896,37 +871,37 @@ export default function App() {
                     </div>
 
                     <div className="space-y-6">
-                        <div className="bg-slate-950 p-8 rounded-3xl border border-slate-800">
+                        <div className="bg-slate-950 p-8 rounded-3xl border border-slate-800 shadow-lg">
                             <h4 className="text-xl font-bold text-white mb-3 flex items-center gap-3">
                                 <Info className="text-blue-500" />
                                 {t.qa.toilets.q}
                             </h4>
-                            <p className="text-slate-400 leading-relaxed">{t.qa.toilets.a}</p>
+                            <p className="text-slate-400 leading-relaxed text-sm">{t.qa.toilets.a}</p>
                         </div>
 
-                        <div className="bg-slate-950 p-8 rounded-3xl border border-slate-800">
+                        <div className="bg-slate-950 p-8 rounded-3xl border border-slate-800 shadow-lg">
                             <h4 className="text-xl font-bold text-white mb-3 flex items-center gap-3">
                                 <ExternalLink className="text-red-500" />
                                 {t.qa.photos.q}
                             </h4>
-                            <p className="text-slate-400 leading-relaxed">{t.qa.photos.a}</p>
+                            <p className="text-slate-400 leading-relaxed text-sm">{t.qa.photos.a}</p>
                         </div>
 
-                        <div className="bg-slate-950 p-8 rounded-3xl border border-slate-800">
+                        <div className="bg-slate-950 p-8 rounded-3xl border border-slate-800 shadow-lg">
                             <h4 className="text-xl font-bold text-white mb-3 flex items-center gap-3">
                                 <MapPin className="text-green-500" />
                                 Map of General Facility
                             </h4>
 
-                            <p className="text-slate-400 mb-6">
+                            <p className="text-slate-400 mb-6 text-sm">
                                 Get an overview of the entire venue including fields, facilities and key areas.
                             </p>
 
                             <a
-                                href="/facility-map.png"   // <-- dit billede
+                                href="/facility-map.png"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="block overflow-hidden rounded-2xl border border-slate-800 hover:border-slate-600 transition-all"
+                                className="block overflow-hidden rounded-2xl border border-slate-800 hover:border-slate-600 transition-all shadow-xl"
                             >
                                 <img
                                     src="/facility-map.png"
@@ -938,9 +913,6 @@ export default function App() {
 
                     </div>
                 </div>
-
-
-
             </section>
 
             {/* Footer */}
@@ -948,17 +920,15 @@ export default function App() {
                 <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
                     <div className="md:col-span-2">
                         <div className="flex items-center gap-3 mb-6">
-                            {/*  <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center"> */}
-                                <img
-                                    src="/logo.png"
-                                    alt="Copenhagen Bowl logo"
-                                    className="w-8 h-8 object-contain"
-                                />
-                            {/*  </div> */}
-                            <span className="font-bold text-xl tracking-tighter">COPENHAGEN BOWL</span>
+                            <img
+                                src="/logo.png"
+                                alt="Copenhagen Bowl logo"
+                                className="w-8 h-8 object-contain"
+                            />
+                            <span className="font-bold text-xl tracking-tighter uppercase">COPENHAGEN BOWL</span>
                         </div>
 
-                        <p className="text-slate-500 max-w-sm mb-8">
+                        <p className="text-slate-500 max-w-sm mb-8 text-sm">
                             The biggest flag football event in Scandinavia. Bringing together athletes from across the globe
                             for a weekend of elite competition.
                         </p>
@@ -968,7 +938,7 @@ export default function App() {
                                 href="https://www.facebook.com/groups/1529865777274897/"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="p-3 bg-slate-900 rounded-xl hover:bg-blue-600 transition-colors"
+                                className="p-3 bg-slate-900 rounded-xl hover:bg-blue-600 transition-colors shadow-lg"
                             >
                                 <Facebook size={20} />
                             </a>
@@ -976,7 +946,7 @@ export default function App() {
                                 href="https://www.instagram.com/copenhagen_bowl/"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="p-3 bg-slate-900 rounded-xl hover:bg-pink-600 transition-colors"
+                                className="p-3 bg-slate-900 rounded-xl hover:bg-pink-600 transition-colors shadow-lg"
                             >
                                 <Instagram size={20} />
                             </a>
@@ -984,7 +954,7 @@ export default function App() {
                                 href="https://www.youtube.com/channel/UCjFf93sjWu1zh_zGgBCVppw/featured"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="p-3 bg-slate-900 rounded-xl hover:bg-red-600 transition-colors"
+                                className="p-3 bg-slate-900 rounded-xl hover:bg-red-600 transition-colors shadow-lg"
                             >
                                 <Youtube size={20} />
                             </a>
@@ -994,20 +964,22 @@ export default function App() {
                     <div>
                         <h5 className="font-bold uppercase tracking-widest text-sm mb-6">Location</h5>
                         <div className="space-y-4 text-slate-400 text-sm leading-relaxed break-words">
-                            <p className="flex gap-3">
+                            <div className="flex gap-3">
                                 <MapPin size={18} className="text-red-500 shrink-0" />
-                                Valby Idrætspark
-                                <br />
-                                Julius Andersensvej 1
-                                <br />
-                                2450 Copenhagen SV
-                            </p>
+                                <p>
+                                    Valby Idrætspark
+                                    <br />
+                                    Julius Andersensvej 1
+                                    <br />
+                                    2450 Copenhagen SV
+                                </p>
+                            </div>
 
-                            <a href="https://share.google/q976mh8bmTGo4aIxO" target="_blank">
-                            <button className="text-blue-500 font-bold text-sm hover:underline" >
-                                Open in Google Maps
+                            <a href="https://share.google/q976mh8bmTGo4aIxO" target="_blank" rel="noopener noreferrer">
+                                <button className="text-blue-500 font-bold text-sm hover:underline" >
+                                    Open in Google Maps
                                 </button>
-                                </a>
+                            </a>
                         </div>
                     </div>
 
