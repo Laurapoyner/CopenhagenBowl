@@ -157,7 +157,7 @@ export default function App() {
                         </h1>
 
                         <p className="text-lg md:text-2xl text-slate-400 mb-12 max-w-2xl mx-auto font-medium px-4">
-                           This is test 110 Teams. 2 Days. Five Champions. Experience the pinnacle of European Flag Football.
+                           110 Teams. 2 Days. Five Champions. Experience the pinnacle of European Flag Football.
                         </p>
 
                         <div className="flex flex-col md:flex-row items-center justify-center gap-6 mb-12">
