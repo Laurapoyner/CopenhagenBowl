@@ -48,12 +48,12 @@ export default function App() {
     };
 
     const partners = [
-        { name: 'MVP Sports Gear', logo: '/mvp.png', href: 'https://mvpsportsgear.dk/' },
-        { name: 'meddethele', logo: '/meddethele.jpg', href: 'https://www.meddethele.dk/' },
-        { name: 'NuOla', logo: '/nuola.png', href: 'https://www.nuola.co.uk/' },
-        { name: 'Big Popas', logo: 'big-popas-black-com.png', href: 'https://bigpopas.com/' },
-        { name: 'UPGear', logo: '/UPGEAR_Logo.png', href: 'https://upgear.ch/' },
-        { name: 'BreakAway Data', logo: '/breakaway.png', href: 'https://www.breakawaydata.com/' },
+        { name: 'MVP Sports Gear', logo: '/mvp.png', href: 'https://mvpsportsgear.dk/', hours: "Sat: 09:00-18:00 / Sun: 09:00-17:00" },
+        { name: 'meddethele', logo: '/meddethele.jpg', href: 'https://www.meddethele.dk/', hours: "All Weekend" },
+        { name: 'NuOla', logo: '/nuola.png', href: 'https://www.nuola.co.uk/', hours: "09:00 - End of play" },
+        { name: 'Big Popas', logo: 'big-popas-black-com.png', href: 'https://bigpopas.com/', hours: "Visit booth for times" },
+        { name: 'UPGear', logo: '/UPGEAR_Logo.png', href: 'https://upgear.ch/', hours: "All Weekend" },
+        { name: 'BreakAway Data', logo: '/breakaway.png', href: 'https://www.breakawaydata.com/', hours: "Visit booth for info" },
     ];
 
     return (
@@ -252,6 +252,11 @@ export default function App() {
                                     <span className="text-[10px] font-bold uppercase tracking-widest text-slate-200 group-hover:text-white transition-colors">
                                         {partner.name}
                                     </span>
+                                    {partner.hours && (
+                                        <span className="text-[8px] font-medium text-slate-500 group-hover:text-slate-400 transition-colors uppercase tracking-tight">
+                                            {partner.hours}
+                                        </span>
+                                    )}
                                 </div>
                             </a>
                         ))}
