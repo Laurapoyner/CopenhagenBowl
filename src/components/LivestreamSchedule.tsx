@@ -20,16 +20,23 @@ export const LivestreamSchedule: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
-      const tournaments = await sportAppService.getTournaments();
-      if (tournaments.length > 0) {
-        const allMatches = await sportAppService.getMatches(tournaments[0].id);
-        const liveMatches = allMatches.filter(m => 
-          LIVESTREAM_FIELDS.includes(m.venue_name)
-        ).sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
-        setMatches(liveMatches);
+      try {
+        setLoading(true);
+        const tournaments = await sportAppService.getTournaments();
+        if (tournaments && tournaments.length > 0) {
+          const allMatches = await sportAppService.getMatches(tournaments[0].id);
+          const liveMatches = allMatches.filter(m => 
+            LIVESTREAM_FIELDS.includes(m.venue_name)
+          ).sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
+          setMatches(liveMatches);
+        } else {
+          console.error('No tournaments found in LivestreamSchedule');
+        }
+      } catch (error) {
+        console.error('Error in LivestreamSchedule fetchData:', error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     fetchData();

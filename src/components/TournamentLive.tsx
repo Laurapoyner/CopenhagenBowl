@@ -23,13 +23,21 @@ export const TournamentLive: React.FC = () => {
 
   const fetchTournaments = async () => {
     try {
+      setLoading(true);
       const data = await sportAppService.getTournaments();
       setTournaments(data);
-      if (data.length > 0 && !selectedTournamentId) {
-        setSelectedTournamentId(data[0].id);
+      if (data.length > 0) {
+        if (!selectedTournamentId) {
+          setSelectedTournamentId(data[0].id);
+        }
+      } else {
+        setError('No tournaments found. Please check your API configuration.');
+        setLoading(false);
       }
     } catch (err) {
       console.error('Failed to fetch tournaments', err);
+      setError('Failed to connect to the tournament server.');
+      setLoading(false);
     }
   };
 
@@ -40,6 +48,13 @@ export const TournamentLive: React.FC = () => {
         sportAppService.getMatches(tournamentId),
         sportAppService.getStandings(tournamentId)
       ]);
+      
+      if (matchesData.length === 0 && standingsData.length === 0) {
+         // Maybe the API returned empty, but we shouldn't necessarily error if it's just an empty tournament
+         // However, if we expected data, this might be a sign of a proxy issue
+         console.warn('Fetched data is empty for tournament:', tournamentId);
+      }
+
       setMatches(matchesData);
       setStandings(standingsData);
       
@@ -51,8 +66,16 @@ export const TournamentLive: React.FC = () => {
       }
       
       setError(null);
-    } catch (err) {
-      setError('Failed to load live data');
+    } catch (err: any) {
+      console.error('Failed to load live data', err);
+      let details = '';
+      try {
+        const errorData = JSON.parse(err.message);
+        details = errorData.details || errorData.error || '';
+      } catch (e) {
+        details = err.message || 'Unknown error';
+      }
+      setError(`Failed to load live data: ${details}`);
     } finally {
       setLoading(false);
     }

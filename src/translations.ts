@@ -82,6 +82,10 @@ export const t: Translation = {
     home: 'Home',
     schedule: 'Schedule',
     livestream: 'Livestream',
+    divisions: 'Divisions',
+    rules: 'Rules',
+    officiating: 'Officiating',
+    history: 'History',
     partners: 'Partners',
   },
   hero: {

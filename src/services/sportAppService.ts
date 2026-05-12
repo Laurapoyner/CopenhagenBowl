@@ -43,12 +43,22 @@ export const sportAppService = {
   async getTournaments(): Promise<SportAppTournament[]> {
     try {
       const response = await fetch(`${BASE_URL}/tournaments`);
-      if (!response.ok) throw new Error('Failed to fetch tournaments');
+      if (!response.ok) {
+        const text = await response.text();
+        console.error(`Tournaments fetch failed (${response.status}):`, text.substring(0, 200));
+        throw new Error(`Failed to fetch tournaments: ${response.status}`);
+      }
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        const text = await response.text();
+        console.error('Expected JSON but received:', text.substring(0, 200));
+        throw new Error('API returned invalid non-JSON response. Check proxy configuration.');
+      }
       const json = await response.json();
       return json.data || [];
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching tournaments:', error);
-      return [];
+      throw error; // Throw so component can show the error
     }
   },
 
@@ -56,9 +66,15 @@ export const sportAppService = {
     try {
       const response = await fetch(`${BASE_URL}/matches?tournament=${tournamentId}`);
       if (!response.ok) {
-        const errorMsg = `Server error: ${response.status} ${response.statusText}`;
-        console.error(errorMsg);
-        throw new Error(errorMsg);
+        let errorDetails = `Server error: ${response.status} ${response.statusText}`;
+        try {
+          const errorJson = await response.json();
+          errorDetails = errorJson.details || errorJson.error || errorDetails;
+        } catch (e) {
+          // Response is not JSON
+        }
+        console.error(errorDetails);
+        throw new Error(errorDetails);
       }
       
       const json = await response.json();
@@ -112,9 +128,9 @@ export const sportAppService = {
       });
       
       return flatMatches;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching matches:', error);
-      return [];
+      throw error;
     }
   },
 
@@ -122,6 +138,12 @@ export const sportAppService = {
     try {
       const response = await fetch(`${BASE_URL}/standings?tournament=${tournamentId}`);
       if (!response.ok) throw new Error('Failed to fetch standings');
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        const text = await response.text();
+        console.error('Expected JSON standings but received:', text.substring(0, 200));
+        throw new Error('API returned invalid non-JSON response for standings.');
+      }
       const json = await response.json();
       const data = json.data || [];
       
@@ -148,9 +170,9 @@ export const sportAppService = {
       });
       
       return groups;
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching standings:', error);
-      return [];
+      throw error;
     }
   }
 };
