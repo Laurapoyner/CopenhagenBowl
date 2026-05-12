@@ -157,7 +157,7 @@ export default function App() {
                         </h1>
 
                         <p className="text-lg md:text-2xl text-slate-400 mb-12 max-w-2xl mx-auto font-medium px-4">
-                            110 Teams. 2 Days. Five Champions. Experience the pinnacle of European Flag Football.
+                           This is test 110 Teams. 2 Days. Five Champions. Experience the pinnacle of European Flag Football.
                         </p>
 
                         <div className="flex flex-col md:flex-row items-center justify-center gap-6 mb-12">
@@ -205,7 +205,7 @@ export default function App() {
             <section className="py-20 bg-slate-900/50 border-y border-slate-800">
                 <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
                     <div>
-                        <div className="text-4xl md:text-5xl font-black text-white mb-2">115</div>
+                        <div className="text-4xl md:text-5xl font-black text-white mb-2">110</div>
                         <div className="text-slate-500 uppercase tracking-widest text-xs font-bold">Teams</div>
                     </div>
                     <div>
