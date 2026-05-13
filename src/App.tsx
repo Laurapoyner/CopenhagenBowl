@@ -49,12 +49,12 @@ export default function App() {
     };
 
     const partners = [
-        { name: 'MVP Sports Gear', logo: '/mvp.png', href: 'https://mvpsportsgear.dk/', hours: "Sat: 09:00-18:00 / Sun: 09:00-17:00" },
+        { name: 'MVP Sports Gear', logo: '/mvplogo.png', href: 'https://mvpsportsgear.dk/', hours: "Sat: 09:00-18:00 / Sun: 09:00-17:00" },
         { name: 'meddethele', logo: '/meddethele.jpg', href: 'https://www.meddethele.dk/', hours: "All Weekend" },
         { name: 'NuOla', logo: '/nuola.png', href: 'https://www.nuola.co.uk/', hours: "09:00 - End of play" },
         { name: 'Big Popas', logo: '/big-popas-black-com.png', href: 'https://bigpopas.com/', hours: "Visit booth for times" },
         { name: 'UPGear', logo: '/UPGEAR_Logo.png', href: 'https://upgear.ch/', hours: "All Weekend" },
-        { name: 'BreakAway Data', logo: '/breakaway.png', href: 'https://www.breakawaydata.com/', hours: "Visit booth for info" },
+        { name: 'BreakAway Data', logo: '/breakawaylogo.png', href: 'https://www.breakawaydata.com/', hours: "Visit booth for info" },
     ];
 
     return (
