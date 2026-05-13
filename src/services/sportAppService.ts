@@ -103,10 +103,22 @@ export const sportAppService = {
           const statusName = match.status?.name?.toLowerCase() || '';
           const isPlayed = statusName.includes('finished') || hasScores;
 
-          // Skip playoff matches that haven't been played yet to avoid placholders/future brackets in the list
-          if (isPlayoffGroup && !isPlayed) {
+          // Only skip playoff matches if they are definitely placeholders (no teams assigned yet)
+          if (isPlayoffGroup && !isPlayed && !match.home && !match.away) {
             return;
           }
+
+          const adjustTime = (dateStr: string) => {
+            if (!dateStr) return dateStr;
+            try {
+              const date = new Date(dateStr);
+              // API times are 1 hour earlier than they should be
+              date.setHours(date.getHours() + 1);
+              return date.toISOString();
+            } catch (e) {
+              return dateStr;
+            }
+          };
 
           flatMatches.push({
             id: match.id,
@@ -115,8 +127,8 @@ export const sportAppService = {
             referee: refereeName ? { name: refereeName } : undefined,
             home_score: homeScore ?? null,
             away_score: awayScore ?? null,
-            start_time: match.date,
-            end_time: match.end_date,
+            start_time: adjustTime(match.date),
+            end_time: adjustTime(match.end_date),
             venue_name: match.venue?.name || 'TBD',
             status: (statusName.includes('playing') ? 'playing' : 
                      isPlayed ? 'played' : 'upcoming') as any,

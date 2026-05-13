@@ -418,7 +418,7 @@ export const TournamentLive: React.FC = () => {
                         <div className="flex items-center gap-1.5 text-slate-400">
                           <Calendar size={12} />
                           <span className="text-[10px] font-black uppercase">
-                            {new Date(match.start_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })} • {new Date(match.start_time).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }).toUpperCase()}
+                            {new Date(match.start_time).toLocaleTimeString('da-DK', { timeZone: 'Europe/Copenhagen', hour: '2-digit', minute: '2-digit' })} • {new Date(match.start_time).toLocaleDateString('en-US', { timeZone: 'Europe/Copenhagen', weekday: 'short', month: 'short', day: 'numeric' }).toUpperCase()}
                           </span>
                         </div>
                         <div className="flex items-center gap-1.5 text-slate-500">

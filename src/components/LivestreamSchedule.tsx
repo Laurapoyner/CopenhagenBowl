@@ -4,6 +4,15 @@ import { sportAppService, SportAppMatch } from '../services/sportAppService';
 import { Youtube, Clock, MapPin, ExternalLink, Loader2, Search, ChevronDown } from 'lucide-react';
 import { cn } from '../lib/utils';
 
+const getCanonicalField = (venueName: string) => {
+  const v = venueName.toLowerCase();
+  if (v.includes('main field')) return 'Main field';
+  // Use regex to match exact field numbers (e.g. "field 2" but not "field 20")
+  if (/\bfield 2\b/.test(v)) return 'Field 2';
+  if (/\bfield 12\b/.test(v)) return 'Field 12';
+  return null;
+};
+
 export const LivestreamSchedule: React.FC = () => {
   const [matches, setMatches] = useState<SportAppMatch[]>([]);
   const [loading, setLoading] = useState(true);
@@ -13,9 +22,9 @@ export const LivestreamSchedule: React.FC = () => {
   const [visibleCount, setVisibleCount] = useState(3);
 
   const LIVESTREAM_FIELDS = [
-    'Main field (live stream)',
-    'Field 2 (live stream)',
-    'Field 12 (live stream)'
+    'Main field',
+    'Field 2',
+    'Field 12'
   ];
 
   useEffect(() => {
@@ -26,7 +35,7 @@ export const LivestreamSchedule: React.FC = () => {
         if (tournaments && tournaments.length > 0) {
           const allMatches = await sportAppService.getMatches(tournaments[0].id);
           const liveMatches = allMatches.filter(m => 
-            LIVESTREAM_FIELDS.includes(m.venue_name)
+            getCanonicalField(m.venue_name) !== null
           ).sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
           setMatches(liveMatches);
         } else {
@@ -49,7 +58,8 @@ export const LivestreamSchedule: React.FC = () => {
       m.home_team?.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
       m.away_team?.name.toLowerCase().includes(searchQuery.toLowerCase());
     
-    const matchesField = fieldFilter === 'all' || m.venue_name === fieldFilter;
+    const canonical = getCanonicalField(m.venue_name);
+    const matchesField = fieldFilter === 'all' || canonical === fieldFilter;
     
     return matchesSearch && matchesField;
   });
@@ -106,7 +116,7 @@ export const LivestreamSchedule: React.FC = () => {
               >
                 <option value="all">All Stream Fields</option>
                 {LIVESTREAM_FIELDS.map(f => (
-                  <option key={f} value={f}>{f.replace(' (live stream)', '')}</option>
+                  <option key={f} value={f}>{f}</option>
                 ))}
               </select>
               <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" size={14} />
@@ -186,8 +196,7 @@ interface MatchCardProps {
 
 const MatchCard: React.FC<MatchCardProps> = ({ match, isLive }) => {
   const startTime = new Date(match.start_time);
-  const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
-  const dayName = days[startTime.getDay()];
+  const dayName = new Intl.DateTimeFormat('en-US', { timeZone: 'Europe/Copenhagen', weekday: 'short' }).format(startTime).toUpperCase();
 
   return (
     <motion.div 
@@ -202,10 +211,10 @@ const MatchCard: React.FC<MatchCardProps> = ({ match, isLive }) => {
         <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
           <Clock size={12} className="text-blue-500" />
           <span className="text-slate-300">{dayName}</span>
-          <span>{startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+          <span>{startTime.toLocaleTimeString('da-DK', { timeZone: 'Europe/Copenhagen', hour: '2-digit', minute: '2-digit' })}</span>
           <span className="mx-1 opacity-30">|</span>
           <MapPin size={12} className="text-red-500 shrink-0" />
-          <span className="truncate max-w-[120px] md:max-w-none">{match.venue_name.replace(' (live stream)', '')}</span>
+          <span className="truncate max-w-[120px] md:max-w-none">{getCanonicalField(match.venue_name) || match.venue_name}</span>
         </div>
         <div className="text-[9px] font-black px-2 py-0.5 bg-slate-800 rounded text-slate-400 uppercase tracking-tighter shrink-0">
           {match.division_name}
