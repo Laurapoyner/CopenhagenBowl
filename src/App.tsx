@@ -147,6 +147,7 @@ export default function App() {
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8 }}
+                        className="pt-32 md:pt-0"
                     >
                         <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-600/10 border border-red-600/30 rounded-full text-red-500 text-[10px] sm:text-sm font-bold mb-8 uppercase tracking-widest max-w-full">
                             <Trophy size={14} className="shrink-0" />
@@ -177,32 +178,26 @@ export default function App() {
 
                         <div className="flex flex-wrap justify-center gap-4">
                             <a href="https://cphbowl.nemtilmeld.dk/8" target="_blank" rel="noopener noreferrer">
-                                <button className="px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl transition-all transform hover:scale-105 shadow-xl shadow-blue-600/20 text-sm md:text-base">
+                                <button className="px-10 py-5 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-2xl transition-all transform hover:scale-105 shadow-2xl shadow-blue-600/30 text-base md:text-lg uppercase tracking-wider">
                                     {t.hero.cta}
                                 </button>
                             </a>
-
-                            <button
-                                onClick={() => scrollTo('qa')}
-                                className="px-8 py-4 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl transition-all border border-slate-700 text-sm md:text-base"
-                            >
-                                {t.qa.title}
-                            </button>
                         </div>
 
-                        {/* Quick Actions moved inside flow with more air */}
-                        <div className="mt-16 md:mt-24 flex flex-wrap justify-center gap-3 md:gap-6">
+                        {/* Quick Actions with more air and Q&A included */}
+                        <div className="mt-20 md:mt-32 flex flex-wrap justify-center gap-4 md:gap-8">
                             {[
-                                { id: 'schedule', label: 'Schedule & Standings', icon: Trophy, color: 'text-blue-500' },
+                                { id: 'schedule', label: 'Schedule', icon: Trophy, color: 'text-blue-500' },
                                 { id: 'livestream', label: 'Livestream', icon: Youtube, color: 'text-red-500' },
-                                { id: 'partners', label: 'Shop Times', icon: Clock, color: 'text-sky-400' },
+                                { id: 'partners', label: 'Shop', icon: Clock, color: 'text-sky-400' },
+                                { id: 'qa', label: 'Q&A', icon: HelpCircle, color: 'text-amber-500' },
                             ].map((item) => (
                                 <button
                                     key={item.id}
                                     onClick={() => scrollTo(item.id)}
-                                    className="group flex items-center gap-3 px-5 md:px-7 py-3 md:py-4 bg-slate-900/40 backdrop-blur-md border border-slate-800/50 rounded-2xl text-[10px] md:text-xs font-black uppercase tracking-widest text-white hover:bg-slate-800/60 hover:border-slate-700 transition-all hover:-translate-y-1"
+                                    className="group flex items-center gap-3 px-6 md:px-8 py-4 md:py-5 bg-slate-900/40 backdrop-blur-md border border-slate-800/50 rounded-2xl text-[11px] md:text-sm font-black uppercase tracking-widest text-white hover:bg-slate-800/60 hover:border-slate-700 transition-all hover:-translate-y-1 shadow-xl"
                                 >
-                                    <item.icon size={16} className={cn("transition-transform group-hover:scale-110", item.color)} />
+                                    <item.icon size={18} className={cn("transition-transform group-hover:scale-110", item.color)} />
                                     <span>{item.label}</span>
                                 </button>
                             ))}
