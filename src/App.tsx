@@ -10,7 +10,7 @@ import {
     Users,
     MapPin,
     Calendar,
-    ChevronDown,
+    Clock,
     ExternalLink,
     Download,
     Menu,
@@ -52,7 +52,7 @@ export default function App() {
         { name: 'MVP Sports Gear', logo: '/mvp.png', href: 'https://mvpsportsgear.dk/', hours: "Sat: 09:00-18:00 / Sun: 09:00-17:00" },
         { name: 'meddethele', logo: '/meddethele.jpg', href: 'https://www.meddethele.dk/', hours: "All Weekend" },
         { name: 'NuOla', logo: '/nuola.png', href: 'https://www.nuola.co.uk/', hours: "09:00 - End of play" },
-        { name: 'Big Popas', logo: 'big-popas-black-com.png', href: 'https://bigpopas.com/', hours: "Visit booth for times" },
+        { name: 'Big Popas', logo: '/big-popas-black-com.png', href: 'https://bigpopas.com/', hours: "Visit booth for times" },
         { name: 'UPGear', logo: '/UPGEAR_Logo.png', href: 'https://upgear.ch/', hours: "All Weekend" },
         { name: 'BreakAway Data', logo: '/breakaway.png', href: 'https://www.breakawaydata.com/', hours: "Visit booth for info" },
     ];
@@ -177,29 +177,38 @@ export default function App() {
 
                         <div className="flex flex-wrap justify-center gap-4">
                             <a href="https://cphbowl.nemtilmeld.dk/8" target="_blank" rel="noopener noreferrer">
-                                <button className="px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl transition-all transform hover:scale-105 shadow-xl shadow-blue-600/20">
+                                <button className="px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl transition-all transform hover:scale-105 shadow-xl shadow-blue-600/20 text-sm md:text-base">
                                     {t.hero.cta}
                                 </button>
                             </a>
 
                             <button
                                 onClick={() => scrollTo('qa')}
-                                className="px-8 py-4 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl transition-all border border-slate-700"
+                                className="px-8 py-4 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl transition-all border border-slate-700 text-sm md:text-base"
                             >
                                 {t.qa.title}
                             </button>
                         </div>
+
+                        {/* Quick Actions moved inside flow with more air */}
+                        <div className="mt-16 md:mt-24 flex flex-wrap justify-center gap-3 md:gap-6">
+                            {[
+                                { id: 'schedule', label: 'Schedule & Standings', icon: Trophy, color: 'text-blue-500' },
+                                { id: 'livestream', label: 'Livestream', icon: Youtube, color: 'text-red-500' },
+                                { id: 'partners', label: 'Shop Times', icon: Clock, color: 'text-sky-400' },
+                            ].map((item) => (
+                                <button
+                                    key={item.id}
+                                    onClick={() => scrollTo(item.id)}
+                                    className="group flex items-center gap-3 px-5 md:px-7 py-3 md:py-4 bg-slate-900/40 backdrop-blur-md border border-slate-800/50 rounded-2xl text-[10px] md:text-xs font-black uppercase tracking-widest text-white hover:bg-slate-800/60 hover:border-slate-700 transition-all hover:-translate-y-1"
+                                >
+                                    <item.icon size={16} className={cn("transition-transform group-hover:scale-110", item.color)} />
+                                    <span>{item.label}</span>
+                                </button>
+                            ))}
+                        </div>
                     </motion.div>
                 </div>
-
-                <motion.div
-                    animate={{ y: [0, 10, 0] }}
-                    transition={{ repeat: Infinity, duration: 2 }}
-                    className="absolute bottom-10 left-1/2 -translate-x-1/2 text-slate-500 cursor-pointer"
-                    onClick={() => scrollTo('divisions')}
-                >
-                    <ChevronDown size={32} />
-                </motion.div>
             </section>
 
             {/* Stats Section */}
