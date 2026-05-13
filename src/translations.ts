@@ -6,7 +6,7 @@ export interface Translation {
     divisions: string;
     rules: string;
     officiating: string;
-    history: string;
+    qa: string;
     partners: string;
   };
   hero: {
@@ -85,7 +85,7 @@ export const t: Translation = {
     divisions: 'Divisions',
     rules: 'Rules',
     officiating: 'Officiating',
-    history: 'History',
+    qa: 'Q&A',
     partners: 'Partners',
   },
   hero: {
@@ -125,7 +125,7 @@ export const t: Translation = {
   },
   contact: {
     title: 'Questions?',
-    subtitle: 'For more information or specific inquiries, feel free to reach out on our social media platforms.',
+    subtitle: 'For more information or specific inquiries, feel free to reach out on our social media platforms. You can also find answers to frequently asked questions in our Q&A section below.',
     facebook: 'Ask on Facebook',
     instagram: 'Ask on Instagram',
   },
@@ -152,8 +152,8 @@ export const t: Translation = {
   qa: {
     title: 'Q&A',
     toilets: {
-      q: 'Where can I find toilets?',
-      a: 'Toilets and changing rooms are located in the main building at Valby Idrætspark.',
+      q: 'Toilets and Changing rooms',
+      a: 'Here is a walk from the field to the WC & Changing rooms. For a map overview, please refer to the "Map of General Facility" image below.',
     },
     photos: {
       q: 'Where can I find pictures from the event?',

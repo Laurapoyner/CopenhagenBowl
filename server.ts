@@ -3,6 +3,8 @@ import { createServer as createViteServer } from 'vite';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+console.log('Server process starting...');
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -13,10 +15,27 @@ async function startServer() {
   const app = express();
   const PORT = 3000;
 
+  // Request logging
+  app.use((req, res, next) => {
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+    next();
+  });
+
+  // Health check
+  app.get('/api/health', (req, res) => {
+    res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  });
+
   // Proxy routes for SportApp
   app.get('/api/sportapp/tournaments', async (req, res) => {
+    console.log('Incoming request: /api/sportapp/tournaments');
     try {
-      const response = await fetch(`${BASE_URL}/tournaments?apikey=${API_KEY}`);
+      const response = await fetch(`${BASE_URL}/tournaments?apikey=${API_KEY}`, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0',
+          'Accept': 'application/json'
+        }
+      });
       const data = await response.json();
       res.json(data);
     } catch (error) {
@@ -27,10 +46,16 @@ async function startServer() {
 
   app.get('/api/sportapp/matches', async (req, res) => {
     const { tournament } = req.query;
+    console.log(`Incoming request: /api/sportapp/matches?tournament=${tournament}`);
     try {
       const url = `${BASE_URL}/matches?tournament=${tournament}&apikey=${API_KEY}`;
       console.log(`Proxying request to SportApp: ${url}`);
-      const response = await fetch(url);
+      const response = await fetch(url, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0',
+          'Accept': 'application/json'
+        }
+      });
       
       if (!response.ok) {
         const text = await response.text();
@@ -48,8 +73,14 @@ async function startServer() {
 
   app.get('/api/sportapp/standings', async (req, res) => {
     const { tournament } = req.query;
+    console.log(`Incoming request: /api/sportapp/standings?tournament=${tournament}`);
     try {
-      const response = await fetch(`${BASE_URL}/standings?tournament=${tournament}&apikey=${API_KEY}`);
+      const response = await fetch(`${BASE_URL}/standings?tournament=${tournament}&apikey=${API_KEY}`, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0',
+          'Accept': 'application/json'
+        }
+      });
       const data = await response.json();
       res.json(data);
     } catch (error) {
@@ -74,7 +105,13 @@ async function startServer() {
   }
 
   app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Server running on port ${PORT}`);
+  });
+
+  // Error handling middleware
+  app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+    console.error('Unhandled server error:', err);
+    res.status(500).json({ error: 'Internal Server Error', message: err.message });
   });
 }
 

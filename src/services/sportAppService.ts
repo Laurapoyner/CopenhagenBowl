@@ -57,8 +57,9 @@ export const sportAppService = {
       const json = await response.json();
       return json.data || [];
     } catch (error: any) {
-      console.error('Error fetching tournaments:', error);
-      throw error; // Throw so component can show the error
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      console.error('Error fetching tournaments:', errorMsg);
+      throw new Error(`Connection error: ${errorMsg}. Please ensure the server is running on port 3000.`);
     }
   },
 
@@ -68,12 +69,9 @@ export const sportAppService = {
       if (!response.ok) {
         let errorDetails = `Server error: ${response.status} ${response.statusText}`;
         try {
-          const errorJson = await response.json();
-          errorDetails = errorJson.details || errorJson.error || errorDetails;
-        } catch (e) {
-          // Response is not JSON
-        }
-        console.error(errorDetails);
+          const text = await response.text();
+          errorDetails = `${errorDetails} - ${text.substring(0, 100)}`;
+        } catch (e) {}
         throw new Error(errorDetails);
       }
       
@@ -141,20 +139,21 @@ export const sportAppService = {
       
       return flatMatches;
     } catch (error: any) {
-      console.error('Error fetching matches:', error);
-      throw error;
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      console.error('Error fetching matches:', errorMsg);
+      throw new Error(`Connection error: ${errorMsg}. Please ensure the server is running on port 3000.`);
     }
   },
 
   async getStandings(tournamentId: number): Promise<SportAppStandingGroup[]> {
     try {
       const response = await fetch(`${BASE_URL}/standings?tournament=${tournamentId}`);
-      if (!response.ok) throw new Error('Failed to fetch standings');
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
       const contentType = response.headers.get('content-type');
       if (!contentType || !contentType.includes('application/json')) {
-        const text = await response.text();
-        console.error('Expected JSON standings but received:', text.substring(0, 200));
-        throw new Error('API returned invalid non-JSON response for standings.');
+        throw new Error('API returned invalid non-JSON response.');
       }
       const json = await response.json();
       const data = json.data || [];
@@ -183,8 +182,9 @@ export const sportAppService = {
       
       return groups;
     } catch (error: any) {
-      console.error('Error fetching standings:', error);
-      throw error;
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      console.error('Error fetching standings:', errorMsg);
+      throw new Error(`Connection error: ${errorMsg}. Please ensure the server is running on port 3000.`);
     }
   }
 };

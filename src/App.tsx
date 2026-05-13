@@ -16,6 +16,7 @@ import {
     Menu,
     X,
     Info,
+    HelpCircle,
     Shield,
     History,
     Youtube,
@@ -182,10 +183,10 @@ export default function App() {
                             </a>
 
                             <button
-                                onClick={() => scrollTo('rules')}
+                                onClick={() => scrollTo('qa')}
                                 className="px-8 py-4 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl transition-all border border-slate-700"
                             >
-                                {t.nav.rules}
+                                {t.qa.title}
                             </button>
                         </div>
                     </motion.div>
@@ -583,117 +584,6 @@ export default function App() {
                 </div>
             </section>
 
-            {/* History & Results */}
-            <section id="history" className="py-32 px-6 bg-slate-900 relative overflow-hidden">
-                <div className="absolute inset-0 z-0">
-                    <img
-                        src="/1CopenhagenBowl.jpg"
-                        alt="History"
-                        className="w-full h-full object-cover opacity-10"
-                        referrerPolicy="no-referrer"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-b from-slate-900 via-transparent to-slate-900" />
-                </div>
-
-                <div className="relative z-10 max-w-7xl mx-auto">
-                    <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8 text-center md:text-left">
-                        <div>
-                            <h2 className="text-4xl md:text-5xl font-black mb-4 uppercase tracking-tighter">
-                                {t.history.title}
-                            </h2>
-                            <p className="text-slate-400 font-medium max-w-xl">{t.history.subtitle}</p>
-                        </div>
-                    </div>
-
-                    <div className="grid lg:grid-cols-3 gap-12">
-                        <div className="lg:col-span-1 px-4 sm:px-0">
-                            <div className="prose prose-invert prose-slate max-w-none">
-                                <h3 className="text-2xl font-bold text-white mb-4">The Story</h3>
-                                <p className="text-slate-400 leading-relaxed">
-                                    Back in 2014 the Swedish national team came to Copenhagen to play some practice matches
-                                    against some local teams. It turned out to be a great success.
-                                </p>
-                                <p className="text-slate-400 leading-relaxed mt-4">
-                                    Martin Andersen decided to invite them back a year later for a full tournament.
-                                    Sportmonda joined as naming sponsor, and the tournament has since grown to the largest in
-                                    Scandinavia.
-                                </p>
-
-                                <div className="mt-8 p-6 bg-blue-600/10 rounded-2xl border border-blue-600/20 shadow-inner">
-                                    <History className="text-blue-500 mb-4" size={32} />
-                                    <p className="text-sm font-bold text-blue-300 uppercase tracking-widest">
-                                        First Winner (2015)
-                                    </p>
-                                    <p className="text-xl font-black text-white">Copenhagen Fusion</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="lg:col-span-2 space-y-12 overflow-hidden">
-                            <div className="bg-slate-950 rounded-3xl border border-slate-800 overflow-hidden shadow-2xl">
-                                <div className="p-6 bg-slate-800/50 border-b border-slate-800 flex justify-between items-center">
-                                    <h4 className="font-bold uppercase tracking-widest text-sm text-slate-400">
-                                        {t.history.results} - 2025 Winners
-                                    </h4>
-                                    <Trophy size={18} className="text-yellow-500" />
-                                </div>
-
-                                <div className="overflow-x-auto scrollbar-hide relative max-w-full">
-                                    <table className="w-full text-left min-w-[500px]">
-                                        <thead>
-                                            <tr className="text-xs uppercase tracking-widest text-slate-500 border-b border-slate-800">
-                                                <th className="px-6 py-4 font-bold">Division</th>
-                                                <th className="px-6 py-4 font-bold">Winner</th>
-                                                <th className="px-6 py-4 font-bold">Runner-up</th>
-                                                <th className="px-6 py-4 font-bold">MVP</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="text-sm">
-                                            {[
-                                                {
-                                                    division: 'Elite',
-                                                    winner: 'Blue Berets (FR)',
-                                                    runner: 'Red Roosters(FR)',
-                                                    mvp: 'Tanguy Lominet',
-                                                },
-                                                {
-                                                    division: 'Leisure',
-                                                    winner: 'London Smoke',
-                                                    runner: 'Air Phoenix',
-                                                    mvp: 'London Smoke #7',
-                                                },
-                                                {
-                                                    division: 'Women',
-                                                    winner: 'TÛrkiye',
-                                                    runner: 'Lionesses (CZ)',
-                                                    mvp: 'TÛrkiye #3',
-                                                },
-                                                {
-                                                    division: 'Co-Ed',
-                                                    winner: 'Swedish Mooses',
-                                                    runner: 'Cornella Meerkats',
-                                                    mvp: 'Mooses #2',
-                                                },
-                                            ].map((row, i) => (
-                                                <tr
-                                                    key={i}
-                                                    className="border-b border-slate-900/50 hover:bg-slate-900/50 transition-colors"
-                                                >
-                                                    <td className="px-6 py-4 font-bold text-slate-400">{row.division}</td>
-                                                    <td className="px-6 py-4 font-black text-white">{row.winner}</td>
-                                                    <td className="px-6 py-4 text-slate-400">{row.runner}</td>
-                                                    <td className="px-6 py-4 text-blue-400 font-medium">{row.mvp}</td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
             {/* Questions / Contact Section */}
             <section className="py-32 px-6 bg-blue-600 relative overflow-hidden">
                 <div className="absolute inset-0 z-0">
@@ -732,6 +622,14 @@ export default function App() {
                             <Instagram size={24} />
                             {t.contact?.instagram}
                         </a>
+
+                        <button
+                            onClick={() => scrollTo('qa')}
+                            className="flex items-center gap-3 px-8 py-4 bg-blue-700 text-white font-black rounded-2xl hover:bg-blue-800 transition-all shadow-xl border border-blue-500/30"
+                        >
+                            <HelpCircle size={24} />
+                            {t.qa.title}
+                        </button>
                     </div>
                 </div>
             </section>
@@ -860,7 +758,6 @@ export default function App() {
                 </div>
             </section>
 
-            {/* Q&A Section */}
             <section id="qa" className="py-32 px-6 bg-slate-900 border-t border-slate-800">
                 <div className="max-w-4xl mx-auto">
                     <div className="text-center mb-20">
@@ -871,12 +768,60 @@ export default function App() {
                     </div>
 
                     <div className="space-y-6">
+                        {/* Field View Topic */}
+                        <div className="bg-slate-950 p-8 rounded-3xl border border-slate-800 shadow-lg">
+                            <h4 className="text-xl font-bold text-white mb-3 flex items-center gap-3">
+                                <MapPin className="text-blue-500" />
+                                Field View
+                            </h4>
+                            <p className="text-slate-400 mb-6 text-sm">
+                                Get a detailed view of the match fields for Copenhagen Bowl.
+                            </p>
+                            <div className="overflow-hidden rounded-2xl border border-slate-800">
+                                <img
+                                    src="/fields.jpg"
+                                    alt="Field Layout"
+                                    className="w-full h-auto object-cover"
+                                    referrerPolicy="no-referrer"
+                                />
+                            </div>
+                        </div>
+
                         <div className="bg-slate-950 p-8 rounded-3xl border border-slate-800 shadow-lg">
                             <h4 className="text-xl font-bold text-white mb-3 flex items-center gap-3">
                                 <Info className="text-blue-500" />
                                 {t.qa.toilets.q}
                             </h4>
-                            <p className="text-slate-400 leading-relaxed text-sm">{t.qa.toilets.a}</p>
+                            <p className="text-slate-400 leading-relaxed text-sm mb-6">{t.qa.toilets.a}</p>
+                            
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">Walk from Field to Toilets (Video 1)</p>
+                                    <div className="aspect-video rounded-xl overflow-hidden border border-slate-800 bg-slate-900">
+                                        <video 
+                                            src="/wcvideo1.mov" 
+                                            controls 
+                                            className="w-full h-full object-cover"
+                                            playsInline
+                                        >
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-1">Walk from Field to Toilets (Video 2)</p>
+                                    <div className="aspect-video rounded-xl overflow-hidden border border-slate-800 bg-slate-900">
+                                        <video 
+                                            src="/wcvideo2.mov" 
+                                            controls 
+                                            className="w-full h-full object-cover"
+                                            playsInline
+                                        >
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div className="bg-slate-950 p-8 rounded-3xl border border-slate-800 shadow-lg">
@@ -910,7 +855,6 @@ export default function App() {
                                 />
                             </a>
                         </div>
-
                     </div>
                 </div>
             </section>
