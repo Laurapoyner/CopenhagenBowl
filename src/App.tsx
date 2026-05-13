@@ -131,15 +131,15 @@ export default function App() {
             </AnimatePresence>
 
             {/* Hero Section */}
-            <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden">
+            <section id="home" className="relative min-h-[100svh] flex items-center justify-center pt-24 pb-12 md:py-32">
                 <div className="absolute inset-0 z-0">
                     <img
                         src="/Front.jpg"
                         alt="Flag Football Action"
-                        className="w-full h-full object-cover opacity-40 scale-105"
+                        className="w-full h-full object-cover object-[center_35%] opacity-40"
                         referrerPolicy="no-referrer"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-transparent to-slate-950" />
                 </div>
 
                 <div className="relative z-10 max-w-5xl mx-auto px-4 md:px-6 text-center">
@@ -147,45 +147,45 @@ export default function App() {
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8 }}
-                        className="pt-32 md:pt-0"
+                        className="relative w-full"
                     >
-                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-600/10 border border-red-600/30 rounded-full text-red-500 text-[10px] sm:text-sm font-bold mb-8 uppercase tracking-widest max-w-full">
-                            <Trophy size={14} className="shrink-0" />
+                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-red-600/10 border border-red-600/30 rounded-full text-red-500 text-[10px] sm:text-xs font-bold mb-4 md:mb-8 uppercase tracking-widest max-w-full">
+                            <Trophy size={11} className="shrink-0 md:w-3.5 md:h-3.5" />
                             <span className="truncate">{t.hero.subtitle}</span>
                         </div>
 
-                        <h1 className="text-4xl sm:text-6xl md:text-8xl font-black mb-6 tracking-tighter leading-none uppercase">
+                        <h1 className="text-4xl sm:text-6xl md:text-8xl font-black mb-4 md:mb-6 tracking-tighter leading-none uppercase">
                             COPENHAGEN <span className="text-blue-500">BOWL</span>
                         </h1>
 
-                        <p className="text-lg md:text-2xl text-slate-400 mb-12 max-w-2xl mx-auto font-medium px-4">
+                        <p className="text-base md:text-2xl text-slate-400 mb-6 md:mb-12 max-w-2xl mx-auto font-medium px-4">
                             110 Teams. 2 Days. Five Champions. Experience the pinnacle of European Flag Football.
                         </p>
 
-                        <div className="flex flex-col md:flex-row items-center justify-center gap-6 mb-12">
-                            <div className="flex items-center gap-3 text-slate-300">
-                                <Calendar className="text-blue-500" />
-                                <span className="font-semibold">{t.hero.date}</span>
+                        <div className="flex flex-col md:flex-row items-center justify-center gap-3 md:gap-6 mb-8 md:mb-12">
+                            <div className="flex items-center gap-2 md:gap-3 text-slate-300">
+                                <Calendar size={16} className="text-blue-500 md:w-5 md:h-5" />
+                                <span className="font-semibold text-xs md:text-base">{t.hero.date}</span>
                             </div>
 
                             <div className="w-1 h-1 bg-slate-700 rounded-full hidden md:block" />
 
-                            <div className="flex items-center gap-3 text-slate-300">
-                                <MapPin className="text-red-500" />
-                                <span className="font-semibold">{t.hero.location}</span>
+                            <div className="flex items-center gap-2 md:gap-3 text-slate-300">
+                                <MapPin size={16} className="text-red-500 md:w-5 md:h-5" />
+                                <span className="font-semibold text-xs md:text-base">{t.hero.location}</span>
                             </div>
                         </div>
 
-                        <div className="flex flex-wrap justify-center gap-4">
+                        <div className="flex flex-wrap justify-center gap-4 mb-4">
                             <a href="https://cphbowl.nemtilmeld.dk/8" target="_blank" rel="noopener noreferrer">
-                                <button className="px-10 py-5 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-2xl transition-all transform hover:scale-105 shadow-2xl shadow-blue-600/30 text-base md:text-lg uppercase tracking-wider">
+                                <button className="px-8 py-4 md:px-10 md:py-5 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-2xl transition-all transform hover:scale-105 shadow-2xl shadow-blue-600/30 text-sm md:text-lg uppercase tracking-wider">
                                     {t.hero.cta}
                                 </button>
                             </a>
                         </div>
 
-                        {/* Quick Actions with more air and Q&A included */}
-                        <div className="mt-20 md:mt-32 flex flex-wrap justify-center gap-4 md:gap-8">
+                        {/* Quick Actions with optimized spacing */}
+                        <div className="mt-8 md:mt-24 grid grid-cols-2 lg:flex lg:flex-wrap justify-center gap-2 md:gap-6 max-w-lg mx-auto md:max-w-none">
                             {[
                                 { id: 'schedule', label: 'Schedule', icon: Trophy, color: 'text-blue-500' },
                                 { id: 'livestream', label: 'Livestream', icon: Youtube, color: 'text-red-500' },
@@ -195,9 +195,9 @@ export default function App() {
                                 <button
                                     key={item.id}
                                     onClick={() => scrollTo(item.id)}
-                                    className="group flex items-center gap-3 px-6 md:px-8 py-4 md:py-5 bg-slate-900/40 backdrop-blur-md border border-slate-800/50 rounded-2xl text-[11px] md:text-sm font-black uppercase tracking-widest text-white hover:bg-slate-800/60 hover:border-slate-700 transition-all hover:-translate-y-1 shadow-xl"
+                                    className="group flex flex-col md:flex-row items-center justify-center md:justify-start gap-1.5 md:gap-3 px-3 py-3.5 md:px-7 md:py-4 bg-slate-900/60 backdrop-blur-md border border-slate-800/50 rounded-xl text-[8px] md:text-xs font-black uppercase tracking-widest text-white hover:bg-slate-800/80 hover:border-slate-700 transition-all hover:-translate-y-1 shadow-lg"
                                 >
-                                    <item.icon size={18} className={cn("transition-transform group-hover:scale-110", item.color)} />
+                                    <item.icon size={12} className={cn("md:w-4 md:h-4 transition-transform group-hover:scale-110", item.color)} />
                                     <span>{item.label}</span>
                                 </button>
                             ))}
@@ -207,7 +207,7 @@ export default function App() {
             </section>
 
             {/* Stats Section */}
-            <section className="py-20 bg-slate-900/50 border-y border-slate-800">
+            <section className="py-24 md:py-32 bg-slate-900/50 border-y border-slate-800">
                 <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
                     <div>
                         <div className="text-4xl md:text-5xl font-black text-white mb-2">110</div>

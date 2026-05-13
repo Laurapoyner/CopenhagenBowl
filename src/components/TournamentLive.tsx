@@ -98,10 +98,46 @@ export const TournamentLive: React.FC = () => {
   }, [selectedTournamentId]);
 
   // Derived data
+  // Custom group order logic
+  const getGroupSortWeight = (division: string, group: string) => {
+    const div = division.toLowerCase();
+    const grp = group.toLowerCase();
+    
+    if (div.includes('competitive')) {
+      if (grp.includes('ca')) return 1;
+      if (grp.includes('cb')) return 2;
+      if (grp.includes('cc')) return 3;
+      if (grp.includes('cd')) return 4;
+      return 10;
+    }
+    
+    if (div.includes('elite')) {
+      if (grp.includes('play-in')) return 50; // Ensure play-ins come after regular groups
+      if (grp.includes('a1')) return 1;
+      if (grp.includes('a2')) return 2;
+      if (grp.includes('b1')) return 3;
+      if (grp.includes('b2')) return 4;
+      return 10;
+    }
+    
+    return 100;
+  };
+
   const divisions = Array.from(new Set([
     ...matches.map(m => m.division_name),
     ...standings.map(s => s.division_name)
-  ])).sort();
+  ])).sort((a, b) => {
+    const getDivWeight = (name: string) => {
+      const n = name.toLowerCase();
+      if (n.includes('elite')) return 1;
+      if (n.includes('competitive')) return 2;
+      return 100;
+    };
+    const wA = getDivWeight(a);
+    const wB = getDivWeight(b);
+    if (wA !== wB) return wA - wB;
+    return a.localeCompare(b);
+  });
 
   const groups = Array.from(new Set([
     ...matches
@@ -110,7 +146,14 @@ export const TournamentLive: React.FC = () => {
     ...standings
       .filter(s => selectedDivision === 'all' || s.division_name === selectedDivision)
       .map(s => s.group_name)
-  ])).sort();
+  ])).sort((a, b) => {
+    if (selectedDivision !== 'all') {
+      const weightA = getGroupSortWeight(selectedDivision, a);
+      const weightB = getGroupSortWeight(selectedDivision, b);
+      if (weightA !== weightB) return weightA - weightB;
+    }
+    return a.localeCompare(b);
+  });
 
   const filteredMatches = matches
     .filter(match => {
@@ -153,6 +196,20 @@ export const TournamentLive: React.FC = () => {
       ...group,
       standings: group.standings.filter(s => s.team_name.toLowerCase().includes(searchQuery.toLowerCase()))
     };
+  }).sort((a, b) => {
+    // Keep divisions together, then apply custom group weight
+    if (a.division_name !== b.division_name) {
+      const divWeightA = divisions.indexOf(a.division_name);
+      const divWeightB = divisions.indexOf(b.division_name);
+      if (divWeightA !== -1 && divWeightB !== -1) return divWeightA - divWeightB;
+      return a.division_name.localeCompare(b.division_name);
+    }
+    
+    const weightA = getGroupSortWeight(a.division_name, a.group_name);
+    const weightB = getGroupSortWeight(b.division_name, b.group_name);
+    
+    if (weightA !== weightB) return weightA - weightB;
+    return a.group_name.localeCompare(b.group_name);
   });
 
   if (loading && matches.length === 0 && !error) {
