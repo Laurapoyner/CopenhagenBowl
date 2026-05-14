@@ -49,12 +49,12 @@ export default function App() {
     };
 
     const partners = [
-        { name: 'MVP Sports Gear', logo: '/mvplogo.png', href: 'https://mvpsportsgear.dk/', hours: "Sat: 09:00-18:00 / Sun: 09:00-17:00" },
-        { name: 'meddethele', logo: '/meddethele.jpg', href: 'https://www.meddethele.dk/', hours: "All Weekend" },
-        { name: 'NuOla', logo: '/nuola.png', href: 'https://www.nuola.co.uk/', hours: "09:00 - End of play" },
-        { name: 'Big Popas', logo: '/big-popas-black-com.png', href: 'https://bigpopas.com/', hours: "Visit booth for times" },
-        { name: 'UPGear', logo: '/UPGEAR_Logo.png', href: 'https://upgear.ch/', hours: "All Weekend" },
-        { name: 'BreakAway Data', logo: '/breakawaylogo.png', href: 'https://www.breakawaydata.com/', hours: "Visit booth for info" },
+        { name: 'MVP Sports Gear', logo: '/mvplogo.png', href: 'https://mvpsportsgear.dk/', hours: "Sat: TBD / Sun: TBD" },
+        { name: 'meddethele', logo: '/meddethele.jpg', href: 'https://www.meddethele.dk/', hours: "Sat: TBD / Sun: TBD" },
+        { name: 'NuOla', logo: '/nuola.png', href: 'https://www.nuola.co.uk/', hours: "Sat: TBD / Sun: TBD" },
+        { name: 'Big Popas', logo: '/big-popas-black-com.png', href: 'https://bigpopas.com/', hours: "Sat: TBD / Sun: TBD" },
+        { name: 'UPGear', logo: '/UPGEAR_Logo.png', href: 'https://upgear.ch/', hours: "Sat: TBD / Sun: TBD" },
+        { name: 'BreakAway Data', logo: '/breakawaylogo.png', href: 'https://www.breakawaydata.com/', hours: "No booth - Online only" },
     ];
 
     return (
@@ -509,7 +509,10 @@ export default function App() {
                                     </li>
                                     <li className="flex gap-3">
                                         <span className="text-blue-500 font-bold">•</span>
-                                        <span>Playoff ties: "2-point Shoot Out". First to score wins.</span>
+                                        <div className="flex flex-col gap-1">
+                                            <span>XP shootout, free choice between 1 or 2 - from 3rd round a team cannot equalize with a 1-point but has to go for 2.</span>
+                                            <span className="text-slate-400 text-xs italic">Teams change to go first (ABBA method).</span>
+                                        </div>
                                     </li>
                                     <li className="flex gap-3">
                                         <span className="text-blue-500 font-bold">•</span>
@@ -548,13 +551,13 @@ export default function App() {
 
                                 <div className="space-y-3 text-sm">
                                     {[
-                                        '1: Points (2 for win, 1 for draw)',
-                                        '2: Largest Point differential',
-                                        '3: Head to Head',
-                                        '4: Most Points scored',
-                                        '5: Views',
-                                        '6: Best Result vs. strongest mutual opponent',
-                                        '7: Shoot Out from 10-yard line',
+                                        '1. Points (2 for win, 1 for draw)',
+                                        '2. Largest Point differential',
+                                        '3. Most Points scored',
+                                        '4. Head to Head games',
+                                        '5. Head to Head points differential',
+                                        '6. Head to Head most points scored',
+                                        '7. XP shootout',
                                     ].map((rule, i) => (
                                         <div
                                             key={i}
@@ -563,6 +566,10 @@ export default function App() {
                                             {rule}
                                         </div>
                                     ))}
+
+                                    <p className="text-[10px] text-slate-500 italic mt-4 px-2 leading-relaxed">
+                                        Note: if teams are eliminated after point 3 or 6 (H2H points scored) then the tiebreaker starts over at point 2
+                                    </p>
                                 </div>
                             </div>
 
@@ -574,7 +581,7 @@ export default function App() {
                                     Participating teams will officiate accompanied by non-playing officials.
                                 </p>
                                 <a
-                                    href="/cheatsheet.jpg"
+                                    href="/cheatsheet26.png"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-2xl transition-all flex items-center justify-center gap-3 shadow-xl shadow-blue-600/20"

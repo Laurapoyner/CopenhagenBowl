@@ -231,18 +231,28 @@ export const TournamentLive: React.FC = () => {
                 <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse" />
                 Tournament Center
               </div>
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2 md:gap-3">
-                <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tighter text-white">
-                  Schedule & Results
-                </h2>
-                <a 
-                  href="https://app.sportapp.io/tournament/copenhagen-bowl" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-3 py-1 bg-blue-600/10 border border-blue-500/30 rounded-lg text-blue-400 text-[10px] font-bold hover:bg-blue-600/20 transition-colors uppercase tracking-widest whitespace-nowrap"
-                >
-                  See More Info <ExternalLink size={10} />
-                </a>
+              <div className="flex flex-col gap-2">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                  <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tighter text-white">
+                    Schedule & Results
+                  </h2>
+                  <a 
+                    href="https://app.sportapp.io/tournament/copenhagen-bowl" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-3 py-1 bg-blue-600/10 border border-blue-500/30 rounded-lg text-blue-400 text-[10px] font-bold hover:bg-blue-600/20 transition-colors uppercase tracking-widest whitespace-nowrap self-start sm:self-auto"
+                  >
+                    See More Info <ExternalLink size={10} />
+                  </a>
+                </div>
+                
+                <div className="flex items-center gap-2 px-1">
+                  <div className="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-pulse shrink-0" />
+                  <p className="text-[9px] md:text-[10px] font-bold text-white uppercase tracking-widest leading-none">
+                    Please check referee duties in the app
+                  </p>
+                </div>
+              </div>
                 {tournaments.length > 1 && (
                   <div className="relative">
                     <select 
@@ -258,7 +268,6 @@ export const TournamentLive: React.FC = () => {
                   </div>
                 )}
               </div>
-            </div>
             
             <div className="flex bg-slate-950 p-1 rounded-xl border border-slate-800 self-start md:self-auto">
               <button 
