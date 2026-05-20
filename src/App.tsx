@@ -49,7 +49,7 @@ export default function App() {
     };
 
     const partners = [
-        { name: 'SportApp.io', logo: '/sportapplogo.png', href: 'https://sportapp.io/', hours: "Tournament App Partner" },
+        { name: 'SportApp.io', logo: '/sportapplogo-1.png', href: 'https://sportapp.io/', hours: "Tournament App Partner" },
         { name: 'MVP Sports Gear', logo: '/mvplogo.png', href: 'https://mvpsportsgear.dk/', hours: "SAT 8:30 - END / SUN 12:00 - END" },
         { name: 'meddethele', logo: '/meddethele.jpg', href: 'https://www.meddethele.dk/', hours: "CHECK BOOTH FOR TIMES" },
         { name: 'NuOla', logo: '/nuola.png', href: 'https://www.nuola.co.uk/', hours: "AVAILABLE AT MVP BOOTH" },
