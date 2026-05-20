@@ -89,6 +89,24 @@ async function startServer() {
     }
   });
 
+  app.get('/api/sportapp/referee-matches', async (req, res) => {
+    const { tournament } = req.query;
+    console.log(`Incoming request: /api/sportapp/referee-matches?tournament=${tournament}`);
+    try {
+      const response = await fetch(`${BASE_URL}/referees-matches?tournament=${tournament}&apikey=${API_KEY}`, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0',
+          'Accept': 'application/json'
+        }
+      });
+      const data = await response.json();
+      res.json(data);
+    } catch (error) {
+      console.error('Proxy error fetching referee matches:', error);
+      res.status(500).json({ error: 'Failed to fetch referee matches' });
+    }
+  });
+
   // Vite middleware for development
   if (process.env.NODE_ENV !== 'production') {
     const vite = await createViteServer({

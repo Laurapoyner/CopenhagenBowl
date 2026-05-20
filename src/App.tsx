@@ -49,11 +49,12 @@ export default function App() {
     };
 
     const partners = [
-        { name: 'MVP Sports Gear', logo: '/mvplogo.png', href: 'https://mvpsportsgear.dk/', hours: "Sat: TBD / Sun: TBD" },
-        { name: 'meddethele', logo: '/meddethele.jpg', href: 'https://www.meddethele.dk/', hours: "Sat: TBD / Sun: TBD" },
-        { name: 'NuOla', logo: '/nuola.png', href: 'https://www.nuola.co.uk/', hours: "Sat: TBD / Sun: TBD" },
-        { name: 'Big Popas', logo: '/big-popas-black-com.png', href: 'https://bigpopas.com/', hours: "Sat: TBD / Sun: TBD" },
-        { name: 'UPGear', logo: '/UPGEAR_Logo.png', href: 'https://upgear.ch/', hours: "Sat: TBD / Sun: TBD" },
+        { name: 'SportApp.io', logo: '/sportapplogo.png', href: 'https://sportapp.io/', hours: "Tournament App Partner" },
+        { name: 'MVP Sports Gear', logo: '/mvplogo.png', href: 'https://mvpsportsgear.dk/', hours: "SAT 8:30 - END / SUN 12:00 - END" },
+        { name: 'meddethele', logo: '/meddethele.jpg', href: 'https://www.meddethele.dk/', hours: "CHECK BOOTH FOR TIMES" },
+        { name: 'NuOla', logo: '/nuola.png', href: 'https://www.nuola.co.uk/', hours: "AVAILABLE AT MVP BOOTH" },
+        { name: 'Big Popas', logo: '/big-popas-black-com.png', href: 'https://bigpopas.com/', hours: "AVAILABLE AT MVP BOOTH" },
+        { name: 'UPGear', logo: '/UPGEAR_Logo.png', href: 'https://upgear.ch/', hours: "SAT 8:30 - END / SUN 12:00 - END" },
         { name: 'BreakAway Data', logo: '/breakawaylogo.png', href: 'https://www.breakawaydata.com/', hours: "No booth - Online only" },
     ];
 
@@ -237,7 +238,7 @@ export default function App() {
                 <div className="max-w-7xl mx-auto text-center">
                     <h2 className="text-4xl font-black mb-16 uppercase tracking-tighter">Our Partners</h2>
 
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 md:gap-12 items-stretch">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-8 md:gap-12 items-stretch animate-fade-in">
                         {partners.map((partner) => (
                             <a
                                 key={partner.name}
@@ -518,6 +519,10 @@ export default function App() {
                                         <span className="text-blue-500 font-bold">•</span>
                                         <span>All offensive penalties result in Loss of Down.</span>
                                     </li>
+                                    <li className="flex gap-3">
+                                        <span className="text-blue-500 font-bold">•</span>
+                                        <span>After time is up then there will be a final play of the half. If this result in a touchdown then XP will also be played.</span>
+                                    </li>
                                 </ul>
                             </div>
 
@@ -788,14 +793,46 @@ export default function App() {
                             <p className="text-slate-400 mb-6 text-sm">
                                 Get a detailed view of the match fields for Copenhagen Bowl.
                             </p>
+
+                            {/* F91/F92 Bold Note */}
+                            <div className="mb-6 bg-slate-900/60 border border-blue-500/20 rounded-2xl p-4 text-sm text-slate-300">
+                                <span className="text-blue-400 font-extrabold block mb-1">⚠️ IMPORTANT FIELD NOTICE:</span>
+                                <strong>Please note that fields F91 and F92 are located in the back/behind.</strong> If you cannot find them, please refer to the <strong className="text-blue-400">Map of General Facility</strong> right below.
+                            </div>
+
                             <div className="overflow-hidden rounded-2xl border border-slate-800">
                                 <img
-                                    src="/fields.jpg"
+                                    src="/fields2.png"
                                     alt="Field Layout"
                                     className="w-full h-auto object-cover"
                                     referrerPolicy="no-referrer"
                                 />
                             </div>
+                        </div>
+
+                        {/* Map of General Facility right after Field View */}
+                        <div className="bg-slate-950 p-8 rounded-3xl border border-slate-800 shadow-lg">
+                            <h4 className="text-xl font-bold text-white mb-3 flex items-center gap-3">
+                                <MapPin className="text-green-500" />
+                                Map of General Facility
+                            </h4>
+
+                            <p className="text-slate-400 mb-6 text-sm">
+                                Get an overview of the entire venue including fields, facilities and key areas.
+                            </p>
+
+                            <a
+                                href="/field1.png"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="block overflow-hidden rounded-2xl border border-slate-800 hover:border-slate-600 transition-all shadow-xl"
+                            >
+                                <img
+                                    src="/field1.png"
+                                    alt="Facility Map"
+                                    className="w-full h-auto object-cover hover:scale-105 transition-transform duration-300"
+                                />
+                            </a>
                         </div>
 
                         <div className="bg-slate-950 p-8 rounded-3xl border border-slate-800 shadow-lg">
@@ -841,30 +878,6 @@ export default function App() {
                                 {t.qa.photos.q}
                             </h4>
                             <p className="text-slate-400 leading-relaxed text-sm">{t.qa.photos.a}</p>
-                        </div>
-
-                        <div className="bg-slate-950 p-8 rounded-3xl border border-slate-800 shadow-lg">
-                            <h4 className="text-xl font-bold text-white mb-3 flex items-center gap-3">
-                                <MapPin className="text-green-500" />
-                                Map of General Facility
-                            </h4>
-
-                            <p className="text-slate-400 mb-6 text-sm">
-                                Get an overview of the entire venue including fields, facilities and key areas.
-                            </p>
-
-                            <a
-                                href="/facility-map.png"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="block overflow-hidden rounded-2xl border border-slate-800 hover:border-slate-600 transition-all shadow-xl"
-                            >
-                                <img
-                                    src="/facility-map.png"
-                                    alt="Facility Map"
-                                    className="w-full h-auto object-cover hover:scale-105 transition-transform duration-300"
-                                />
-                            </a>
                         </div>
                     </div>
                 </div>

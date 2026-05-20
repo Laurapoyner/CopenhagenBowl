@@ -7,9 +7,9 @@ import { cn } from '../lib/utils';
 const getCanonicalField = (venueName: string) => {
   const v = venueName.toLowerCase();
   if (v.includes('main field')) return 'Main field';
-  // Use regex to match exact field numbers (e.g. "field 2" but not "field 20")
-  if (/\bfield 2\b/.test(v)) return 'Field 2';
-  if (/\bfield 12\b/.test(v)) return 'Field 12';
+  // Use regex to match exact field numbers
+  if (/\bfield 3\b/.test(v)) return 'Field 3';
+  if (/\bfield 4\b/.test(v)) return 'Field 4';
   return null;
 };
 
@@ -23,8 +23,8 @@ export const LivestreamSchedule: React.FC = () => {
 
   const LIVESTREAM_FIELDS = [
     'Main field',
-    'Field 2',
-    'Field 12'
+    'Field 3',
+    'Field 4'
   ];
 
   useEffect(() => {

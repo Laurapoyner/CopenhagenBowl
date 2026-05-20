@@ -15,6 +15,10 @@ export interface SportAppMatch {
   division_name: string;
 }
 
+export interface SportAppRefereeMatch extends SportAppMatch {
+  referee_team_name?: string;
+}
+
 export interface SportAppStanding {
   team_name: string;
   played: number;
@@ -39,27 +43,30 @@ export interface SportAppTournament {
   name: string;
 }
 
+const adjustTime = (dateStr: string) => {
+  if (!dateStr) return dateStr;
+  try {
+    const date = new Date(dateStr);
+    // API times are usually 1 hour earlier than they should be
+    date.setHours(date.getHours() + 1);
+    return date.toISOString();
+  } catch (e) {
+    return dateStr;
+  }
+};
+
 export const sportAppService = {
   async getTournaments(): Promise<SportAppTournament[]> {
     try {
       const response = await fetch(`${BASE_URL}/tournaments`);
       if (!response.ok) {
-        const text = await response.text();
-        console.error(`Tournaments fetch failed (${response.status}):`, text.substring(0, 200));
         throw new Error(`Failed to fetch tournaments: ${response.status}`);
-      }
-      const contentType = response.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
-        const text = await response.text();
-        console.error('Expected JSON but received:', text.substring(0, 200));
-        throw new Error('API returned invalid non-JSON response. Check proxy configuration.');
       }
       const json = await response.json();
       return json.data || [];
     } catch (error: any) {
-      const errorMsg = error instanceof Error ? error.message : String(error);
-      console.error('Error fetching tournaments:', errorMsg);
-      throw new Error(`Connection error: ${errorMsg}. Please ensure the server is running on port 3000.`);
+      console.error('Error fetching tournaments:', error);
+      throw new Error(`Connection error: ${error.message}`);
     }
   },
 
@@ -67,12 +74,7 @@ export const sportAppService = {
     try {
       const response = await fetch(`${BASE_URL}/matches?tournament=${tournamentId}`);
       if (!response.ok) {
-        let errorDetails = `Server error: ${response.status} ${response.statusText}`;
-        try {
-          const text = await response.text();
-          errorDetails = `${errorDetails} - ${text.substring(0, 100)}`;
-        } catch (e) {}
-        throw new Error(errorDetails);
+        throw new Error(`Server error: ${response.status}`);
       }
       
       const json = await response.json();
@@ -83,65 +85,108 @@ export const sportAppService = {
         const division_name = divisionEntry.division?.name || 'Unknown';
         divisionEntry.groups?.forEach((groupEntry: any) => {
           const group_name = groupEntry.group?.name || 'Unknown';
-        const isPlayoffGroup = groupEntry.group?.is_playoff === true;
-        
-        groupEntry.matches?.forEach((match: any) => {
-          const refereeName = match.referee_team?.name || 
-                            match.referee?.name || 
-                            match.official?.name || 
-                            (match.officials && match.officials.length > 0 ? match.officials[0].name : undefined) ||
-                            match.duty_team?.name;
-
-          // Scores are nested in the result object in the provided JSON
-          const homeScore = match.result?.home_score;
-          const awayScore = match.result?.away_score;
-          const hasScores = homeScore !== null && homeScore !== undefined && 
-                           awayScore !== null && awayScore !== undefined;
+          const isPlayoffGroup = groupEntry.group?.is_playoff === true;
           
-          const statusName = match.status?.name?.toLowerCase() || '';
-          const isPlayed = statusName.includes('finished') || hasScores;
+          groupEntry.matches?.forEach((match: any) => {
+            const referees = match.referees || [];
+            const refereeFromList = referees.length > 0 ? (referees[0].official?.name || referees[0].official_name) : undefined;
+            
+            const refereeName = match.referee_team?.name || 
+                              match.referee?.name || 
+                              match.official?.name || 
+                              (match.officials && match.officials.length > 0 ? match.officials[0].name : undefined) ||
+                              match.duty_team?.name ||
+                              refereeFromList;
 
-          // Only skip playoff matches if they are definitely placeholders (no teams assigned yet)
-          if (isPlayoffGroup && !isPlayed && !match.home && !match.away) {
-            return;
-          }
+            const homeScore = match.result?.home_score;
+            const awayScore = match.result?.away_score;
+            const hasScores = homeScore !== null && homeScore !== undefined && 
+                             awayScore !== null && awayScore !== undefined;
+            
+            const statusName = match.status?.name?.toLowerCase() || '';
+            const isPlayed = statusName.includes('finished') || hasScores;
 
-          const adjustTime = (dateStr: string) => {
-            if (!dateStr) return dateStr;
-            try {
-              const date = new Date(dateStr);
-              // API times are 1 hour earlier than they should be
-              date.setHours(date.getHours() + 1);
-              return date.toISOString();
-            } catch (e) {
-              return dateStr;
+            if (isPlayoffGroup && !isPlayed && !match.home && !match.away) {
+              return;
             }
-          };
 
-          flatMatches.push({
-            id: match.id,
-            home_team: match.home ? { name: match.home.name, id: match.home.id } : undefined,
-            away_team: match.away ? { name: match.away.name, id: match.away.id } : undefined,
-            referee: refereeName ? { name: refereeName } : undefined,
-            home_score: homeScore ?? null,
-            away_score: awayScore ?? null,
-            start_time: adjustTime(match.date),
-            end_time: adjustTime(match.end_date),
-            venue_name: match.venue?.name || 'TBD',
-            status: (statusName.includes('playing') ? 'playing' : 
-                     isPlayed ? 'played' : 'upcoming') as any,
-            group_name: group_name,
-            division_name: division_name
+            flatMatches.push({
+              id: match.id,
+              home_team: match.home ? { name: match.home.name, id: match.home.id } : undefined,
+              away_team: match.away ? { name: match.away.name, id: match.away.id } : undefined,
+              referee: refereeName ? { name: refereeName } : undefined,
+              home_score: homeScore ?? null,
+              away_score: awayScore ?? null,
+              start_time: adjustTime(match.date),
+              end_time: adjustTime(match.end_date),
+              venue_name: match.venue?.name || 'TBD',
+              status: (statusName.includes('playing') ? 'playing' : 
+                       isPlayed ? 'played' : 'upcoming') as any,
+              group_name: group_name,
+              division_name: division_name
+            });
           });
-        });
         });
       });
       
       return flatMatches;
     } catch (error: any) {
-      const errorMsg = error instanceof Error ? error.message : String(error);
-      console.error('Error fetching matches:', errorMsg);
-      throw new Error(`Connection error: ${errorMsg}. Please ensure the server is running on port 3000.`);
+      console.error('Error fetching matches:', error);
+      throw new Error(`Connection error: ${error.message}`);
+    }
+  },
+
+  async getRefereeMatches(tournamentId: number): Promise<SportAppRefereeMatch[]> {
+    try {
+      const response = await fetch(`${BASE_URL}/referee-matches?tournament=${tournamentId}`);
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+      
+      const json = await response.json();
+      const data = json.data || [];
+      
+      const flatMatches: SportAppRefereeMatch[] = [];
+      data.forEach((divisionEntry: any) => {
+        const division_name = divisionEntry.division?.name || 'Unknown';
+        divisionEntry.groups?.forEach((groupEntry: any) => {
+          const group_name = groupEntry.group?.name || 'Unknown';
+          groupEntry.matches?.forEach((match: any) => {
+            const referees = match.referees || [];
+            const refereeName = referees.length > 0 ? (referees[0].official?.name || referees[0].official_name) : undefined;
+
+            const homeScore = match.result?.home_score;
+            const awayScore = match.result?.away_score;
+            const hasScores = homeScore !== null && homeScore !== undefined && 
+                             awayScore !== null && awayScore !== undefined;
+            
+            const statusName = match.status?.name?.toLowerCase() || '';
+            const isPlayed = statusName.includes('finished') || hasScores;
+
+            flatMatches.push({
+              id: match.id,
+              home_team: match.home ? { name: match.home.name, id: match.home.id } : undefined,
+              away_team: match.away ? { name: match.away.name, id: match.away.id } : undefined,
+              referee: refereeName ? { name: refereeName } : undefined,
+              referee_team_name: refereeName,
+              home_score: homeScore ?? null,
+              away_score: awayScore ?? null,
+              start_time: adjustTime(match.date),
+              end_time: adjustTime(match.end_date),
+              venue_name: match.venue?.name || 'TBD',
+              status: (statusName.includes('playing') ? 'playing' : 
+                       isPlayed ? 'played' : 'upcoming') as any,
+              group_name: group_name,
+              division_name: division_name
+            });
+          });
+        });
+      });
+      
+      return flatMatches;
+    } catch (error: any) {
+      console.error('Error fetching referee matches:', error);
+      throw new Error(`Connection error: ${error.message}`);
     }
   },
 
@@ -150,10 +195,6 @@ export const sportAppService = {
       const response = await fetch(`${BASE_URL}/standings?tournament=${tournamentId}`);
       if (!response.ok) {
         throw new Error(`Server error: ${response.status}`);
-      }
-      const contentType = response.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
-        throw new Error('API returned invalid non-JSON response.');
       }
       const json = await response.json();
       const data = json.data || [];
@@ -182,9 +223,8 @@ export const sportAppService = {
       
       return groups;
     } catch (error: any) {
-      const errorMsg = error instanceof Error ? error.message : String(error);
-      console.error('Error fetching standings:', errorMsg);
-      throw new Error(`Connection error: ${errorMsg}. Please ensure the server is running on port 3000.`);
+      console.error('Error fetching standings:', error);
+      throw new Error(`Connection error: ${error.message}`);
     }
   }
 };

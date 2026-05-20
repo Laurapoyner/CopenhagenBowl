@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { sportAppService, SportAppMatch, SportAppStandingGroup, SportAppTournament } from '../services/sportAppService';
-import { Trophy, Calendar, MapPin, Loader2, RefreshCw, Search, Filter, ChevronDown, ExternalLink } from 'lucide-react';
+import { sportAppService, SportAppMatch, SportAppStandingGroup, SportAppTournament, SportAppRefereeMatch } from '../services/sportAppService';
+import { Trophy, Calendar, MapPin, Loader2, RefreshCw, Search, Filter, ChevronDown, ExternalLink, ShieldCheck } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 export const TournamentLive: React.FC = () => {
   const [tournaments, setTournaments] = useState<SportAppTournament[]>([]);
   const [matches, setMatches] = useState<SportAppMatch[]>([]);
+  const [refereeMatches, setRefereeMatches] = useState<SportAppRefereeMatch[]>([]);
   const [standings, setStandings] = useState<SportAppStandingGroup[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [tab, setTab] = useState<'matches' | 'standings'>('matches');
+  const [tab, setTab] = useState<'matches' | 'standings' | 'teamPlan'>('matches');
   
   // Filters
   const [selectedTournamentId, setSelectedTournamentId] = useState<number | null>(null);
+  const [selectedTeam, setSelectedTeam] = useState<string>('');
+  const [teamSearchTerm, setTeamSearchTerm] = useState<string>('');
   const [selectedDivision, setSelectedDivision] = useState<string>('all');
   const [selectedGroup, setSelectedGroup] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<'all' | 'upcoming' | 'played'>('upcoming');
@@ -44,19 +47,15 @@ export const TournamentLive: React.FC = () => {
   const fetchData = async (tournamentId: number) => {
     setLoading(true);
     try {
-      const [matchesData, standingsData] = await Promise.all([
+      const [matchesData, standingsData, refereeData] = await Promise.all([
         sportAppService.getMatches(tournamentId),
-        sportAppService.getStandings(tournamentId)
+        sportAppService.getStandings(tournamentId),
+        sportAppService.getRefereeMatches(tournamentId)
       ]);
       
-      if (matchesData.length === 0 && standingsData.length === 0) {
-         // Maybe the API returned empty, but we shouldn't necessarily error if it's just an empty tournament
-         // However, if we expected data, this might be a sign of a proxy issue
-         console.warn('Fetched data is empty for tournament:', tournamentId);
-      }
-
       setMatches(matchesData);
       setStandings(standingsData);
+      setRefereeMatches(refereeData);
       
       // Default to first division if not set
       if (selectedDivision === 'all' && matchesData.length > 0) {
@@ -212,6 +211,23 @@ export const TournamentLive: React.FC = () => {
     return a.group_name.localeCompare(b.group_name);
   });
 
+  const allTeams = Array.from(new Set([
+    ...matches.map(m => m.home_team?.name).filter(Boolean),
+    ...matches.map(m => m.away_team?.name).filter(Boolean),
+    ...refereeMatches.map(m => m.referee?.name).filter(Boolean)
+  ] as string[])).sort();
+
+  const filteredTeamsForSearch = allTeams.filter(team => 
+    team.toLowerCase().includes(teamSearchTerm.toLowerCase())
+  );
+
+  const teamSchedule = selectedTeam 
+    ? [
+        ...matches.filter(m => m.home_team?.name === selectedTeam || m.away_team?.name === selectedTeam).map(m => ({ ...m, type: 'playing' as const })),
+        ...refereeMatches.filter(m => m.referee?.name === selectedTeam).map(m => ({ ...m, type: 'refereeing' as const }))
+      ].sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime())
+    : [];
+
   if (loading && matches.length === 0 && !error) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-slate-400">
@@ -227,23 +243,25 @@ export const TournamentLive: React.FC = () => {
         <div className="flex flex-col mb-6 md:mb-12 gap-6 md:gap-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-6">
             <div>
-              <div className="inline-flex items-center gap-2 px-2 py-0.5 bg-blue-500/10 border border-blue-500/30 rounded-full text-blue-500 text-[10px] font-bold mb-2 md:mb-4 uppercase tracking-widest">
-                <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse" />
-                Tournament Center
+              <div className="flex flex-wrap items-center gap-3 mb-2 md:mb-4">
+                <div className="inline-flex items-center gap-2 px-2 py-0.5 bg-blue-500/10 border border-blue-500/30 rounded-full text-blue-500 text-[10px] font-bold uppercase tracking-widest">
+                  <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse" />
+                  Tournament Center
+                </div>
+                <a 
+                  href="https://app.sportapp.io/tournament/copenhagen-bowl" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-3 px-3 py-1 bg-blue-600/15 border border-blue-500/30 hover:bg-blue-600/30 rounded-full text-blue-400 text-[10px] font-bold hover:text-white transition-all uppercase tracking-widest whitespace-nowrap"
+                >
+                  Go to Tournament Webapp <ExternalLink size={10} />
+                </a>
               </div>
               <div className="flex flex-col gap-2">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-3">
                   <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tighter text-white">
                     Schedule & Results
                   </h2>
-                  <a 
-                    href="https://app.sportapp.io/tournament/copenhagen-bowl" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-3 py-1 bg-blue-600/10 border border-blue-500/30 rounded-lg text-blue-400 text-[10px] font-bold hover:bg-blue-600/20 transition-colors uppercase tracking-widest whitespace-nowrap self-start sm:self-auto"
-                  >
-                    See More Info <ExternalLink size={10} />
-                  </a>
                 </div>
                 
                 <div className="flex items-center gap-2 px-1">
@@ -288,99 +306,153 @@ export const TournamentLive: React.FC = () => {
               >
                 Standings
               </button>
+              <button 
+                onClick={() => setTab('teamPlan')}
+                className={cn(
+                  "px-4 md:px-6 py-1.5 md:py-2 rounded-lg text-xs md:text-sm font-bold uppercase tracking-wider transition-all",
+                  tab === 'teamPlan' ? "bg-blue-600 text-white" : "text-slate-500 hover:text-slate-300"
+                )}
+              >
+                Team Plan
+              </button>
             </div>
           </div>
 
-          {/* Filters Bar */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 p-3 md:p-4 bg-slate-950/50 border border-slate-800 rounded-2xl">
-            {/* Division Selector */}
-            <div className="relative">
-              <label className="text-[9px] uppercase font-bold text-slate-500 mb-1 block ml-1">Division</label>
+          {tab !== 'teamPlan' ? (
+            /* Standard Filters Bar */
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 p-3 md:p-4 bg-slate-950/50 border border-slate-800 rounded-2xl">
+              {/* Division Selector */}
               <div className="relative">
-                <select 
-                  value={selectedDivision} 
-                  onChange={(e) => {
-                    setSelectedDivision(e.target.value);
-                    setSelectedGroup('all');
-                    setVisibleMatches(6);
-                    setVisibleGroups(3);
-                  }}
-                  className="w-full bg-slate-900 border border-slate-800 rounded-xl px-8 py-2 text-white/90 text-[11px] md:text-sm font-medium appearance-none focus:outline-none focus:border-blue-500 transition-colors"
-                >
-                  <option value="all">All Divisions</option>
-                  {divisions.map(d => (
-                    <option key={d} value={d}>{d}</option>
-                  ))}
-                </select>
-                <Trophy size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
-                <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+                <label className="text-[9px] uppercase font-bold text-slate-500 mb-1 block ml-1">Division</label>
+                <div className="relative">
+                  <select 
+                    value={selectedDivision} 
+                    onChange={(e) => {
+                      setSelectedDivision(e.target.value);
+                      setSelectedGroup('all');
+                      setVisibleMatches(6);
+                      setVisibleGroups(3);
+                    }}
+                    className="w-full bg-slate-900 border border-slate-800 rounded-xl px-8 py-2 text-white/90 text-[11px] md:text-sm font-medium appearance-none focus:outline-none focus:border-blue-500 transition-colors"
+                  >
+                    <option value="all">All Divisions</option>
+                    {divisions.map(d => (
+                      <option key={d} value={d}>{d}</option>
+                    ))}
+                  </select>
+                  <Trophy size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+                  <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+                </div>
               </div>
-            </div>
 
-            {/* Group Selector */}
-            <div className="relative">
-              <label className="text-[9px] uppercase font-bold text-slate-500 mb-1 block ml-1">Group</label>
+              {/* Group Selector */}
               <div className="relative">
-                <select 
-                  value={selectedGroup} 
-                  onChange={(e) => {
-                    setSelectedGroup(e.target.value);
-                    setVisibleMatches(6);
-                    setVisibleGroups(3);
-                  }}
-                  className="w-full bg-slate-900 border border-slate-800 rounded-xl px-8 py-2 text-white/90 text-[11px] md:text-sm font-medium appearance-none focus:outline-none focus:border-blue-500 transition-colors"
-                >
-                  <option value="all">All Groups</option>
-                  {groups.map(g => (
-                    <option key={g} value={g}>{g}</option>
-                  ))}
-                </select>
-                <Filter size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
-                <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+                <label className="text-[9px] uppercase font-bold text-slate-500 mb-1 block ml-1">Group</label>
+                <div className="relative">
+                  <select 
+                    value={selectedGroup} 
+                    onChange={(e) => {
+                      setSelectedGroup(e.target.value);
+                      setVisibleMatches(6);
+                      setVisibleGroups(3);
+                    }}
+                    className="w-full bg-slate-900 border border-slate-800 rounded-xl px-8 py-2 text-white/90 text-[11px] md:text-sm font-medium appearance-none focus:outline-none focus:border-blue-500 transition-colors"
+                  >
+                    <option value="all">All Groups</option>
+                    {groups.map(g => (
+                      <option key={g} value={g}>{g}</option>
+                    ))}
+                  </select>
+                  <Filter size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+                  <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+                </div>
               </div>
-            </div>
 
-            {/* Status Filter */}
-            <div className="relative">
-              <label className="text-[9px] uppercase font-bold text-slate-500 mb-1 block ml-1">View</label>
+              {/* Status Filter */}
               <div className="relative">
-                <select 
-                  value={statusFilter} 
-                  onChange={(e) => {
-                    setStatusFilter(e.target.value as any);
-                    setVisibleMatches(6);
-                    setVisibleGroups(3);
-                  }}
-                  className="w-full bg-slate-900 border border-slate-800 rounded-xl px-8 py-2 text-white/90 text-[11px] md:text-sm font-medium appearance-none focus:outline-none focus:border-blue-500 transition-colors"
-                >
-                  <option value="upcoming">Upcoming Matches</option>
-                  <option value="played">Played Matches</option>
-                  <option value="all">All Matches</option>
-                </select>
-                <Calendar size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
-                <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+                <label className="text-[9px] uppercase font-bold text-slate-500 mb-1 block ml-1">View</label>
+                <div className="relative">
+                  <select 
+                    value={statusFilter} 
+                    onChange={(e) => {
+                      setStatusFilter(e.target.value as any);
+                      setVisibleMatches(6);
+                      setVisibleGroups(3);
+                    }}
+                    className="w-full bg-slate-900 border border-slate-800 rounded-xl px-8 py-2 text-white/90 text-[11px] md:text-sm font-medium appearance-none focus:outline-none focus:border-blue-500 transition-colors"
+                  >
+                    <option value="upcoming">Upcoming Matches</option>
+                    <option value="played">Played Matches</option>
+                    <option value="all">All Matches</option>
+                  </select>
+                  <Calendar size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+                  <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+                </div>
               </div>
-            </div>
 
-            {/* Team Search */}
-            <div className="relative">
-              <label className="text-[9px] uppercase font-bold text-slate-500 mb-1 block ml-1">Search Team</label>
+              {/* Team Search */}
               <div className="relative">
-                <input 
-                  type="text" 
-                  placeholder="Search..."
-                  value={searchQuery}
-                  onChange={(e) => {
-                    setSearchQuery(e.target.value);
-                    setVisibleMatches(6);
-                    setVisibleGroups(3);
-                  }}
-                  className="w-full bg-slate-900 border border-slate-800 rounded-xl px-8 py-2 text-white/90 text-[11px] md:text-sm font-medium focus:outline-none focus:border-blue-500 transition-colors placeholder:text-slate-700"
-                />
-                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+                <label className="text-[9px] uppercase font-bold text-slate-500 mb-1 block ml-1">Search Team</label>
+                <div className="relative">
+                  <input 
+                    type="text" 
+                    placeholder="Search..."
+                    value={searchQuery}
+                    onChange={(e) => {
+                      setSearchQuery(e.target.value);
+                      setVisibleMatches(6);
+                      setVisibleGroups(3);
+                    }}
+                    className="w-full bg-slate-900 border border-slate-800 rounded-xl px-8 py-2 text-white/90 text-[11px] md:text-sm font-medium focus:outline-none focus:border-blue-500 transition-colors placeholder:text-slate-700"
+                  />
+                  <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+                </div>
               </div>
             </div>
-          </div>
+          ) : (
+            /* Team Plan Search & Selector */
+            <div className="p-4 md:p-6 bg-slate-950/50 border border-slate-800 rounded-2xl flex flex-col items-center">
+              <label className="text-xs uppercase font-bold text-slate-500 mb-4 tracking-widest text-center">Search and select your team to see your daily schedule</label>
+              
+              <div className="w-full max-w-md space-y-3">
+                {/* Search Field */}
+                <div className="relative">
+                  <input 
+                    type="text"
+                    placeholder="Type to search team..."
+                    value={teamSearchTerm}
+                    onChange={(e) => setTeamSearchTerm(e.target.value)}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl pl-10 pr-4 py-2.5 text-white text-sm font-medium focus:outline-none focus:border-blue-500 transition-all"
+                  />
+                  <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+                  {teamSearchTerm && (
+                    <button 
+                      onClick={() => setTeamSearchTerm('')}
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
+                    >
+                      ×
+                    </button>
+                  )}
+                </div>
+
+                {/* Team Selector */}
+                <div className="relative">
+                  <select 
+                    value={selectedTeam} 
+                    onChange={(e) => setSelectedTeam(e.target.value)}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-10 py-3 text-white text-sm font-bold appearance-none focus:outline-none focus:border-blue-500 transition-all shadow-xl"
+                  >
+                    <option value="">{teamSearchTerm ? `Matching Teams (${filteredTeamsForSearch.length})` : 'Select Team...'}</option>
+                    {(teamSearchTerm ? filteredTeamsForSearch : allTeams).map(teamName => (
+                      <option key={teamName} value={teamName}>{teamName}</option>
+                    ))}
+                  </select>
+                  <ShieldCheck size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-blue-500 pointer-events-none" />
+                  <ChevronDown size={18} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none" />
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {error && (
@@ -394,7 +466,7 @@ export const TournamentLive: React.FC = () => {
 
         <div className="min-h-[400px]">
           <AnimatePresence mode="wait" initial={false}>
-            {tab === 'matches' ? (
+            {tab === 'matches' && (
               <motion.div
                 key="matches"
                 initial={{ opacity: 0, y: 10 }}
@@ -463,35 +535,27 @@ export const TournamentLive: React.FC = () => {
                         </div>
                       </div>
 
-                      {match.referee && (
-                        <div className="mt-3 px-2 py-1.5 bg-blue-600/10 border border-blue-500/20 rounded-lg flex items-center gap-2">
-                          <div className="w-4 h-4 rounded-full bg-blue-500 flex items-center justify-center">
-                            <span className="text-[7px] font-black text-white">R</span>
+                        <div className="mt-4 pt-4 border-t border-slate-900 flex flex-col gap-2">
+                          <div className="flex justify-between items-center">
+                            <div className="flex items-center gap-1.5 text-slate-400">
+                              <Calendar size={12} />
+                              <span className="text-[10px] font-black uppercase">
+                                {new Date(match.start_time).toLocaleTimeString('da-DK', { timeZone: 'Europe/Copenhagen', hour: '2-digit', minute: '2-digit' })} • {new Date(match.start_time).toLocaleDateString('en-US', { timeZone: 'Europe/Copenhagen', weekday: 'short', month: 'short', day: 'numeric' }).toUpperCase()}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-1.5 text-slate-500">
+                              <MapPin size={12} />
+                              <span className="text-[10px] font-bold truncate max-w-[100px]">{match.venue_name}</span>
+                            </div>
                           </div>
-                          <div className="flex flex-col">
-                            <span className="text-[8px] font-bold uppercase text-blue-500/70 leading-none">Referee</span>
-                            <span className={cn(
-                              "text-[10px] font-black truncate transition-colors",
-                              searchQuery && match.referee.name.toLowerCase().includes(searchQuery.toLowerCase()) ? "text-blue-400" : "text-white"
-                            )}>
-                              {match.referee.name}
-                            </span>
-                          </div>
+                          {match.referee && (
+                            <div className="flex items-center gap-1 text-[10px] font-bold text-white/50 uppercase tracking-tighter mt-1">
+                              <ShieldCheck size={10} className="text-white/30" />
+                              <span className="text-white/30">Ref duties:</span>
+                              <span className="truncate">{match.referee.name}</span>
+                            </div>
+                          )}
                         </div>
-                      )}
-
-                      <div className="mt-4 pt-4 border-t border-slate-900 flex justify-between items-center">
-                        <div className="flex items-center gap-1.5 text-slate-400">
-                          <Calendar size={12} />
-                          <span className="text-[10px] font-black uppercase">
-                            {new Date(match.start_time).toLocaleTimeString('da-DK', { timeZone: 'Europe/Copenhagen', hour: '2-digit', minute: '2-digit' })} • {new Date(match.start_time).toLocaleDateString('en-US', { timeZone: 'Europe/Copenhagen', weekday: 'short', month: 'short', day: 'numeric' }).toUpperCase()}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-1.5 text-slate-500">
-                          <MapPin size={12} />
-                          <span className="text-[10px] font-bold truncate max-w-[100px]">{match.venue_name}</span>
-                        </div>
-                      </div>
                     </div>
                   ))
                 ) : (
@@ -511,81 +575,169 @@ export const TournamentLive: React.FC = () => {
                   Load more matches
                 </button>
               )}
-            </motion.div>
-          ) : (
-            <motion.div
-              key="standings"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.15 }}
-              className="space-y-8 flex flex-col"
-            >
-              {filteredStandings.length > 0 ? (
-                filteredStandings.map((group, groupIdx) => (
-                  <div key={`${group.group_name}-${groupIdx}`} className="bg-slate-950/80 backdrop-blur-sm border border-slate-800 rounded-2xl overflow-hidden">
-                    <div className="p-4 md:p-5 bg-slate-900 border-b border-slate-800">
-                      <h4 className="font-black uppercase tracking-tighter text-white flex items-center gap-2 text-sm md:text-base">
-                        <Trophy size={16} className="text-yellow-500" />
-                        {group.division_name} - {group.group_name}
-                      </h4>
-                    </div>
-                    <div className="overflow-x-auto overflow-y-hidden max-w-full">
-                      <table className="w-full text-left border-collapse">
-                        <thead>
-                          <tr className="bg-slate-950/50 text-[8px] md:text-[9px] uppercase font-bold tracking-widest text-slate-500">
-                            <th className="px-2 py-2 w-8 text-center">#</th>
-                            <th className="px-2 py-2">Team</th>
-                            <th className="px-1 py-2 text-center w-8">P</th>
-                            <th className="px-1 py-2 text-center w-8">W</th>
-                            <th className="px-1 py-2 text-center w-8">D</th>
-                            <th className="px-1 py-2 text-center w-8">L</th>
-                            <th className="px-1 py-2 text-center w-10">+/-</th>
-                            <th className="px-2 py-2 text-right w-10">PTS</th>
-                          </tr>
-                        </thead>
-                        <tbody className="text-[10px] md:text-xs">
-                          {group.standings.map((team) => (
-                            <tr key={team.team_name} className="border-b border-slate-900/50 hover:bg-slate-900/30 transition-colors">
-                              <td className="px-2 py-1.5 text-center font-bold text-slate-600">{team.position}</td>
-                              <td className={cn(
-                                "px-2 py-1.5 font-bold truncate transition-colors",
-                                team.team_name.length > 20 ? "text-[9px] md:text-[10px]" : "",
-                                searchQuery && team.team_name.toLowerCase().includes(searchQuery.toLowerCase()) ? "text-blue-400" : "text-slate-200"
-                              )}>
-                                {team.team_name}
-                              </td>
-                              <td className="px-1 py-1.5 text-center text-slate-400">{team.played}</td>
-                              <td className="px-1 py-1.5 text-center text-slate-400 font-medium">{team.won}</td>
-                              <td className="px-1 py-1.5 text-center text-slate-400">{team.drawn}</td>
-                              <td className="px-1 py-1.5 text-center text-slate-400">{team.lost}</td>
-                              <td className={cn(
-                                "px-1 py-1.5 text-center font-mono text-[9px] md:text-[10px]",
-                                team.points_difference > 0 ? "text-emerald-500" : team.points_difference < 0 ? "text-red-500" : "text-slate-600"
-                              )}>
-                                {team.points_difference > 0 ? '+' : ''}{team.points_difference}
-                              </td>
-                              <td className="px-2 py-1.5 text-right font-black text-blue-500">{team.points}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="py-16 text-center bg-slate-950/50 rounded-3xl border border-dashed border-slate-800 text-slate-600 px-6">
-                  <p className="text-sm font-medium">
-                    {searchQuery || selectedGroup !== 'all' || selectedDivision !== 'all' ? 'No teams match your search.' : 'No standings available yet.'}
-                  </p>
-                </div>
-              )}
+              </motion.div>
+            )}
 
-            </motion.div>
-          )}
-        </AnimatePresence>
+            {tab === 'standings' && (
+              <motion.div
+                key="standings"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.15 }}
+                className="space-y-8 flex flex-col"
+              >
+                {filteredStandings.length > 0 ? (
+                  filteredStandings.map((group, groupIdx) => (
+                    <div key={`${group.group_name}-${groupIdx}`} className="bg-slate-950/80 backdrop-blur-sm border border-slate-800 rounded-2xl overflow-hidden">
+                      <div className="p-4 md:p-5 bg-slate-900 border-b border-slate-800">
+                        <h4 className="font-black uppercase tracking-tighter text-white flex items-center gap-2 text-sm md:text-base">
+                          <Trophy size={16} className="text-yellow-500" />
+                          {group.division_name} - {group.group_name}
+                        </h4>
+                      </div>
+                      <div className="overflow-x-auto overflow-y-hidden max-w-full">
+                        <table className="w-full text-left border-collapse">
+                          <thead>
+                            <tr className="bg-slate-950/50 text-[8px] md:text-[9px] uppercase font-bold tracking-widest text-slate-500">
+                              <th className="px-2 py-2 w-8 text-center">#</th>
+                              <th className="px-2 py-2">Team</th>
+                              <th className="px-1 py-2 text-center w-8">P</th>
+                              <th className="px-1 py-2 text-center w-8">W</th>
+                              <th className="px-1 py-2 text-center w-8">D</th>
+                              <th className="px-1 py-2 text-center w-8">L</th>
+                              <th className="px-1 py-2 text-center w-10">+/-</th>
+                              <th className="px-2 py-2 text-right w-10">PTS</th>
+                            </tr>
+                          </thead>
+                          <tbody className="text-[10px] md:text-xs">
+                            {group.standings.map((team) => (
+                              <tr key={team.team_name} className="border-b border-slate-900/50 hover:bg-slate-900/30 transition-colors">
+                                <td className="px-2 py-1.5 text-center font-bold text-slate-600">{team.position}</td>
+                                <td className={cn(
+                                  "px-2 py-1.5 font-bold truncate transition-colors",
+                                  team.team_name.length > 20 ? "text-[9px] md:text-[10px]" : "",
+                                  searchQuery && team.team_name.toLowerCase().includes(searchQuery.toLowerCase()) ? "text-blue-400" : "text-slate-200"
+                                )}>
+                                  {team.team_name}
+                                </td>
+                                <td className="px-1 py-1.5 text-center text-slate-400">{team.played}</td>
+                                <td className="px-1 py-1.5 text-center text-slate-400 font-medium">{team.won}</td>
+                                <td className="px-1 py-1.5 text-center text-slate-400">{team.drawn}</td>
+                                <td className="px-1 py-1.5 text-center text-slate-400">{team.lost}</td>
+                                <td className={cn(
+                                  "px-1 py-1.5 text-center font-mono text-[9px] md:text-[10px]",
+                                  team.points_difference > 0 ? "text-emerald-500" : team.points_difference < 0 ? "text-red-500" : "text-slate-600"
+                                )}>
+                                  {team.points_difference > 0 ? '+' : ''}{team.points_difference}
+                                </td>
+                                <td className="px-2 py-1.5 text-right font-black text-blue-500">{team.points}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="py-16 text-center bg-slate-950/50 rounded-3xl border border-dashed border-slate-800 text-slate-600 px-6">
+                    <p className="text-sm font-medium">
+                      {searchQuery || selectedGroup !== 'all' || selectedDivision !== 'all' ? 'No teams match your search.' : 'No standings available yet.'}
+                    </p>
+                  </div>
+                )}
+              </motion.div>
+            )}
+
+            {tab === 'teamPlan' && (
+              <motion.div
+                key="teamPlan"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.15 }}
+                className="flex flex-col gap-6"
+              >
+                {!selectedTeam ? (
+                  <div className="py-20 text-center bg-slate-950/30 rounded-3xl border border-dashed border-slate-800 text-slate-500">
+                    <ShieldCheck size={48} className="mx-auto mb-4 opacity-20" />
+                    <p className="text-sm font-bold uppercase tracking-widest italic">Please select your team above to view schedule</p>
+                  </div>
+                ) : (
+                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                    {teamSchedule.length > 0 ? (
+                      teamSchedule.map((item) => (
+                        <div key={`${item.type}-${item.id}`} className={cn(
+                          "bg-slate-950/80 backdrop-blur-sm border rounded-2xl p-4 md:p-5 transition-all",
+                          item.type === 'playing' ? "border-blue-500/30 hover:border-blue-500/60" : "border-yellow-500/30 hover:border-yellow-500/60"
+                        )}>
+                          <div className="flex justify-between items-start mb-4">
+                            <span className="text-[9px] font-black uppercase tracking-widest text-slate-500">
+                              {item.division_name} • {item.group_name}
+                            </span>
+                            <div className={cn(
+                              "px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-tighter",
+                              item.type === 'playing' ? "bg-blue-600 text-white" : "bg-yellow-500 text-black"
+                            )}>
+                              {item.type === 'playing' ? 'Playing' : 'Refereeing'}
+                            </div>
+                          </div>
+
+                            <div className="flex justify-between items-center bg-slate-900/50 p-3 rounded-xl border border-slate-800/50 mb-4">
+                              <div className="flex flex-col">
+                                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">
+                                  {item.type === 'playing' ? 'Opponent' : 'Officiating'}
+                                </span>
+                                <span className="text-sm font-black text-white">
+                                  {item.type === 'playing' 
+                                    ? (item.home_team?.name === selectedTeam ? (item.away_team?.name || 'TBD') : (item.home_team?.name || 'TBD'))
+                                    : `${item.home_team?.name || 'TBD'} vs ${item.away_team?.name || 'TBD'}`
+                                  }
+                                </span>
+                              </div>
+                              <div className={cn(
+                                "w-10 h-10 rounded-full flex items-center justify-center border",
+                                item.type === 'playing' ? "bg-blue-500/10 border-blue-500/30 text-blue-500" : "bg-yellow-500/10 border-yellow-500/30 text-yellow-500"
+                              )}>
+                                {item.type === 'playing' ? <Trophy size={18} /> : <ShieldCheck size={18} />}
+                              </div>
+                            </div>
+
+                          <div className="pt-4 border-t border-slate-900 flex flex-col gap-2">
+                            <div className="flex justify-between items-center">
+                              <div className="flex items-center gap-1.5 text-slate-400">
+                                <Calendar size={12} />
+                                <span className="text-[10px] font-black uppercase">
+                                  {new Date(item.start_time).toLocaleDateString('en-US', { timeZone: 'Europe/Copenhagen', weekday: 'short' }).toUpperCase()} • {new Date(item.start_time).toLocaleTimeString('da-DK', { timeZone: 'Europe/Copenhagen', hour: '2-digit', minute: '2-digit' })}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-1.5 text-slate-500">
+                                <MapPin size={12} />
+                                <span className="text-[10px] font-bold truncate max-w-[100px]">{item.venue_name}</span>
+                              </div>
+                            </div>
+                            {item.referee && item.type === 'playing' && (
+                              <div className="flex items-center gap-1 text-[10px] font-bold text-white/50 uppercase tracking-tighter mt-1">
+                                <ShieldCheck size={10} className="text-white/30" />
+                                <span className="text-white/30">Ref duties:</span>
+                                <span className="truncate">{item.referee.name}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="col-span-full py-16 text-center bg-slate-950/50 rounded-3xl border border-dashed border-slate-800 text-slate-600 px-6">
+                        <p className="text-sm font-medium">No matches or referee duties found for this team.</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
-    </div>
-  </section>
-  );
-};
+    </section>
+    );
+  };
