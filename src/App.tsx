@@ -33,6 +33,10 @@ import { LivestreamSchedule } from './components/LivestreamSchedule';
 export default function App() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
+    // Set to true once 2027 team registration opens
+    const isRegistrationOpen = false;
+    // Set to true once 2027 clinic registration opens
+    const isClinicRegistrationOpen = false;
 
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -178,11 +182,18 @@ export default function App() {
                         </div>
 
                         <div className="flex flex-wrap justify-center gap-4 mb-4">
-                            <a href="https://cphbowl.nemtilmeld.dk/8" target="_blank" rel="noopener noreferrer">
-                                <button className="px-8 py-4 md:px-10 md:py-5 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-2xl transition-all transform hover:scale-105 shadow-2xl shadow-blue-600/30 text-sm md:text-lg uppercase tracking-wider">
-                                    {t.hero.cta}
-                                </button>
-                            </a>
+                            {isRegistrationOpen ? (
+                                <a href="https://cphbowl.nemtilmeld.dk/8" target="_blank" rel="noopener noreferrer">
+                                    <button className="px-8 py-4 md:px-10 md:py-5 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-2xl transition-all transform hover:scale-105 shadow-2xl shadow-blue-600/30 text-sm md:text-lg uppercase tracking-wider">
+                                        {t.hero.cta}
+                                    </button>
+                                </a>
+                            ) : (
+                                <div className="inline-flex items-center gap-3 px-8 py-4 md:px-10 md:py-5 bg-slate-900/90 border border-blue-500/30 text-slate-200 font-black rounded-2xl shadow-2xl text-sm md:text-base uppercase tracking-wider backdrop-blur-md">
+                                    <Clock size={18} className="text-blue-400 animate-pulse" />
+                                    <span>Registration Opening Soon</span>
+                                </div>
+                            )}
                         </div>
 
                         {/* Quick Actions with optimized spacing */}
@@ -415,6 +426,11 @@ export default function App() {
 
                 <div className="relative z-10 max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-16">
                     <div className="flex-1">
+                        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-blue-700/80 border border-blue-400/30 rounded-full text-white text-xs font-bold mb-4 uppercase tracking-widest shadow-lg">
+                            <Calendar size={14} className="text-blue-200" />
+                            <span>May 21-23, 2027</span>
+                        </div>
+
                         <h2 className="text-5xl font-black mb-6 uppercase tracking-tighter leading-none">
                             {t.officiating.title}
                         </h2>
@@ -439,20 +455,27 @@ export default function App() {
                             </div>
                         </div>
 
-                        <a
-                            href="https://www.holdsport.dk/public_ticket_events/copenhagen-bowl-flag-football-officiating-clinic--2"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-3 px-8 py-4 bg-white text-blue-600 font-black rounded-2xl hover:bg-blue-50 transition-all shadow-xl"
-                        >
-                            {t.officiating.signup}
-                            <ExternalLink size={20} />
-                        </a>
+                        {isClinicRegistrationOpen ? (
+                            <a
+                                href="https://www.holdsport.dk/public_ticket_events/copenhagen-bowl-flag-football-officiating-clinic--2"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-3 px-8 py-4 bg-white text-blue-600 font-black rounded-2xl hover:bg-blue-50 transition-all shadow-xl"
+                            >
+                                {t.officiating.signup}
+                                <ExternalLink size={20} />
+                            </a>
+                        ) : (
+                            <div className="inline-flex items-center gap-3 px-8 py-4 bg-blue-700/60 border border-white/20 text-white font-black rounded-2xl shadow-xl text-sm md:text-base uppercase tracking-wider backdrop-blur-md">
+                                <Clock size={18} className="text-blue-200 animate-pulse" />
+                                <span>Clinic Sign-up Opening Soon</span>
+                            </div>
+                        )}
                     </div>
 
                     <div className="flex-1 relative">
                         <div className="bg-white/10 backdrop-blur-md p-8 rounded-3xl border border-white/20 shadow-2xl">
-                            <h4 className="font-bold text-xl mb-6 border-b border-white/20 pb-4">Instructors include:</h4>
+                            <h4 className="font-bold text-xl mb-6 border-b border-white/20 pb-4">2026 Instructors included:</h4>
                             <ul className="space-y-4">
                                 <li className="flex justify-between items-center">
                                     <span className="font-bold">Mara Steiner</span>
@@ -484,7 +507,7 @@ export default function App() {
                             {t.rules.title}
                         </h2>
                         <p className="text-slate-400 font-medium italic">
-                            Sportmonda Bowl X will use IFAF Rules with specific tournament adjustments
+                            Copenhagen Bowl will use IFAF Rules with specific tournament adjustments
                         </p>
                     </div>
 
@@ -973,7 +996,7 @@ export default function App() {
                         </a>{' '}
                         for providing professional images for this website.
                     </p>
-                    © 2026 Copenhagen Bowl. All rights reserved.
+                    © 2027 Copenhagen Bowl. All rights reserved.
                 </div>
             </footer>
         </div>

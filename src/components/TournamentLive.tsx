@@ -29,7 +29,12 @@ export const TournamentLive: React.FC = () => {
       setLoading(true);
       const data = await sportAppService.getTournaments();
       setTournaments(data);
-      if (data.length > 0) {
+      const nonTestTournaments = data.filter(t => !t.name.toLowerCase().includes('test'));
+      if (nonTestTournaments.length > 0) {
+        if (!selectedTournamentId) {
+          setSelectedTournamentId(nonTestTournaments[0].id);
+        }
+      } else if (data.length > 0) {
         if (!selectedTournamentId) {
           setSelectedTournamentId(data[0].id);
         }
@@ -53,15 +58,23 @@ export const TournamentLive: React.FC = () => {
         sportAppService.getRefereeMatches(tournamentId)
       ]);
       
-      setMatches(matchesData);
-      setStandings(standingsData);
-      setRefereeMatches(refereeData);
+      const cleanMatches = matchesData.filter(m => m.division_name?.toLowerCase() !== 'test');
+      const cleanStandings = standingsData.filter(s => s.division_name?.toLowerCase() !== 'test');
+      const cleanReferee = refereeData.filter(r => r.division_name?.toLowerCase() !== 'test');
       
-      // Default to first division if not set
-      if (selectedDivision === 'all' && matchesData.length > 0) {
-        setSelectedDivision(matchesData[0].division_name);
-      } else if (selectedDivision === 'all' && standingsData.length > 0) {
-        setSelectedDivision(standingsData[0].division_name);
+      setMatches(cleanMatches);
+      setStandings(cleanStandings);
+      setRefereeMatches(cleanReferee);
+      
+      // Default to Elite or first real division (away from test)
+      const availableDivisions = Array.from(new Set([
+        ...cleanMatches.map(m => m.division_name),
+        ...cleanStandings.map(s => s.division_name)
+      ]));
+
+      if (selectedDivision === 'all' || selectedDivision.toLowerCase() === 'test') {
+        const defaultDiv = availableDivisions.find(d => d.toLowerCase().includes('elite')) || availableDivisions[0] || 'all';
+        setSelectedDivision(defaultDiv);
       }
       
       setError(null);
@@ -125,11 +138,16 @@ export const TournamentLive: React.FC = () => {
   const divisions = Array.from(new Set([
     ...matches.map(m => m.division_name),
     ...standings.map(s => s.division_name)
-  ])).sort((a, b) => {
+  ]))
+  .filter(d => d && d.toLowerCase() !== 'test')
+  .sort((a, b) => {
     const getDivWeight = (name: string) => {
       const n = name.toLowerCase();
       if (n.includes('elite')) return 1;
       if (n.includes('competitive')) return 2;
+      if (n.includes('women')) return 3;
+      if (n.includes('coed') || n.includes('co-ed') || n.includes('mix')) return 4;
+      if (n.includes('leisure')) return 5;
       return 100;
     };
     const wA = getDivWeight(a);

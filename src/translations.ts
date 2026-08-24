@@ -89,9 +89,9 @@ export const t: Translation = {
     partners: 'Partners',
   },
   hero: {
-    title: 'Copenhagen Bowl 2026',
+    title: 'Copenhagen Bowl 2027',
     subtitle: "Europe's Largest Flag Football Tournament",
-    date: 'May 23-24, 2026',
+    date: 'May 22-23, 2027',
     location: 'Valby Idrætspark, Copenhagen',
     cta: 'Register Team',
   },
@@ -114,7 +114,7 @@ export const t: Translation = {
   },
   officiating: {
     title: 'Officiating Clinic',
-    subtitle: 'Learn from the best IFAF officials',
+    subtitle: 'May 21-23, 2027 • Learn from the best IFAF officials',
     signup: 'Sign up for Clinic',
   },
   history: {

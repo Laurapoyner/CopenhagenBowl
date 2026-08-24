@@ -32,10 +32,13 @@ export const LivestreamSchedule: React.FC = () => {
       try {
         setLoading(true);
         const tournaments = await sportAppService.getTournaments();
-        if (tournaments && tournaments.length > 0) {
-          const allMatches = await sportAppService.getMatches(tournaments[0].id);
+        const nonTestTournaments = tournaments.filter(t => !t.name.toLowerCase().includes('test'));
+        const targetTournament = nonTestTournaments.length > 0 ? nonTestTournaments[0] : tournaments[0];
+        if (targetTournament) {
+          const allMatches = await sportAppService.getMatches(targetTournament.id);
           const liveMatches = allMatches.filter(m => 
-            getCanonicalField(m.venue_name) !== null
+            getCanonicalField(m.venue_name) !== null &&
+            m.division_name?.toLowerCase() !== 'test'
           ).sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime());
           setMatches(liveMatches);
         } else {
