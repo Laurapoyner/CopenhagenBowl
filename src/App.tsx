@@ -34,9 +34,9 @@ export default function App() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
     // Set to true once 2027 team registration opens
-    const isRegistrationOpen = false;
+    const isRegistrationOpen = true;
     // Set to true once 2027 clinic registration opens
-    const isClinicRegistrationOpen = false;
+    const isClinicRegistrationOpen = true;
 
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -183,7 +183,7 @@ export default function App() {
 
                         <div className="flex flex-wrap justify-center gap-4 mb-4">
                             {isRegistrationOpen ? (
-                                <a href="https://cphbowl.nemtilmeld.dk/8" target="_blank" rel="noopener noreferrer">
+                                <a href="https://cphbowl.nemtilmeld.dk/11/" target="_blank" rel="noopener noreferrer">
                                     <button className="px-8 py-4 md:px-10 md:py-5 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-2xl transition-all transform hover:scale-105 shadow-2xl shadow-blue-600/30 text-sm md:text-lg uppercase tracking-wider">
                                         {t.hero.cta}
                                     </button>
@@ -226,7 +226,7 @@ export default function App() {
                         <div className="text-slate-500 uppercase tracking-widest text-xs font-bold">Teams</div>
                     </div>
                     <div>
-                        <div className="text-4xl md:text-5xl font-black text-white mb-2">12</div>
+                        <div className="text-4xl md:text-5xl font-black text-white mb-2">13</div>
                         <div className="text-slate-500 uppercase tracking-widest text-xs font-bold">Editions</div>
                     </div>
                     <div>
@@ -457,7 +457,7 @@ export default function App() {
 
                         {isClinicRegistrationOpen ? (
                             <a
-                                href="https://www.holdsport.dk/public_ticket_events/copenhagen-bowl-flag-football-officiating-clinic--2"
+                                href="https://www.holdsport.dk/public_ticket_events/copenhagen-bowl-flag-football-officiating-clinic--4"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="inline-flex items-center gap-3 px-8 py-4 bg-white text-blue-600 font-black rounded-2xl hover:bg-blue-50 transition-all shadow-xl"
